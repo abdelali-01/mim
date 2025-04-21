@@ -8,6 +8,7 @@ import { getResetPasswordEmail } from "../utils/email/emailTemplates.js";
 import { emailSender } from "../utils/email/emailSender.js";
 import dotenv from "dotenv";
 import { body, validationResult } from "express-validator";
+import { rolePermissions } from "../utils/middlewares/adminPermissions.js";
 dotenv.config();
 
 const router = express.Router();
@@ -33,15 +34,15 @@ router.post(
     body("password")
       .isLength({ min: 8 })
       .withMessage("Password must be at least 8 characters long"),
-  ],
+  ], rolePermissions(["super", "sub-super"]),
+  // Only allow super and sub-super admins to register new users
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, email, phone, password } = req.body;
-
+    const { username, email, phone, password , isAdmin , role} = req.body;
     try {
       // Check if the username, email, or phone already exists
       const existingUser = await User.findOne({
@@ -62,6 +63,8 @@ router.post(
         email,
         phone,
         password: hashedPassword,
+        isAdmin,
+        role,
       });
       await newUser.save();
 

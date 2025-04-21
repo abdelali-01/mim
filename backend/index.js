@@ -56,5 +56,9 @@ app.use(passport.session());
 
 // setup our routes
 import authRoutes from "./routers/auth.js";
+import productRoutes from "./routers/product.js";
+import notebookRoutes from "./routers/notebook.js";
 
 app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/notebooks", notebookRoutes);
