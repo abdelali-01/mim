@@ -8,7 +8,10 @@ import { getResetPasswordEmail } from "../utils/email/emailTemplates.js";
 import { emailSender } from "../utils/email/emailSender.js";
 import dotenv from "dotenv";
 import { body, validationResult } from "express-validator";
-import { rolePermissions } from "../utils/middlewares/adminPermissions.js";
+import {
+  addAdminPermissions,
+  rolePermissions,
+} from "../utils/middlewares/adminPermissions.js";
 dotenv.config();
 
 const router = express.Router();
@@ -34,15 +37,17 @@ router.post(
     body("password")
       .isLength({ min: 8 })
       .withMessage("Password must be at least 8 characters long"),
-  ], rolePermissions(["super", "sub-super"]),
+  ],
+  rolePermissions(["super", "sub-super"]),
   // Only allow super and sub-super admins to register new users
+  addAdminPermissions(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, email, phone, password , isAdmin , role} = req.body;
+    const { username, email, phone, password, isAdmin, role } = req.body;
     try {
       // Check if the username, email, or phone already exists
       const existingUser = await User.findOne({
@@ -108,9 +113,9 @@ router.post("/reset-password", async (req, res) => {
   try {
     // Find the user by email
     const user = await User.findOne({ email });
-    
+
     if (!user) {
-        return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
     const token = jwt.sign({ email: email }, process.env.JWT_SECRET, {
       expiresIn: "1h",
@@ -122,7 +127,7 @@ router.post("/reset-password", async (req, res) => {
 
     try {
       await emailSender({
-        email : user.email,
+        email: user.email,
         subject: "Reset Password",
         html: template,
       });

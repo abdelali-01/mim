@@ -4,7 +4,7 @@ import Notebook from "../models/Notebook.js"; // Adjust the path as needed
 const router = express.Router();
 
 // Create a new notebook
-router.post("/", async (req, res) => {
+router.post("/", rolePermissions(['super' , 'sub-super']) ,async (req, res) => {
   try {
     const notebook = new Notebook(req.body);
     const savedNotebook = await notebook.save();
@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
 });
 
 // Get all notebooks
-router.get("/", async (req, res) => {
+router.get("/", rolePermissions(['super' , 'sub-super']) ,async (req, res) => {
   try {
     const notebooks = await Notebook.find();
     res.status(200).json(notebooks);
@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
 });
 
 // Get a single notebook by ID
-router.get("/:id", async (req, res) => {
+router.get("/:id", rolePermissions(['super' , 'sub-super']) ,async (req, res) => {
   try {
     const notebook = await Notebook.findById(req.params.id);
     if (!notebook) {
@@ -38,7 +38,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Update a notebook by ID or add an item to the table
-router.put("/:id", async (req, res) => {
+router.put("/:id", rolePermissions(['super' , 'sub-super']) , async (req, res) => {
   try {
     // Check if the request is to add an item to the table
     if (req.body.tableItem) {
@@ -70,7 +70,7 @@ router.put("/:id", async (req, res) => {
 
 // delete an item from the table
 // PATCH / :id?method=remove
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", rolePermissions(['super']) , async (req, res) => {
   // Check if the request is to remove an item from the table
   const { method } = req.query;
   try {
@@ -109,7 +109,7 @@ router.patch("/:id", async (req, res) => {
 });
 
 // Delete a notebook by ID
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", rolePermissions(['super']) ,async (req, res) => {
   try {
     const deletedNotebook = await Notebook.findByIdAndDelete(req.params.id);
     if (!deletedNotebook) {
