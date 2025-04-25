@@ -2,13 +2,14 @@ import mongoose from "mongoose";
 
 const trodatOrderSchema = new mongoose.Schema(
   {
-    user: {
+    client: {
       id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: [true, "User ID is required"],
       },
-      username: { type: String, required: [true, "User name is required"] },
+      name: { type: String, required: [true, "User name is required"] },
+      email: { type: String, required: [true, "User email is required"] },
+      phone: { type: String, required: [true, "User phone is required"] },
     },
     name: {
       type: String,
@@ -16,6 +17,7 @@ const trodatOrderSchema = new mongoose.Schema(
     },
     trodat: {
       type: String,
+      ref: "ServiceProduct",
       required: [true, "Trodat name is required"],
     },
     files: [
