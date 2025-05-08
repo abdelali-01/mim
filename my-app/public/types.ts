@@ -1,15 +1,18 @@
+export interface ProductItem  {
+  product: string;
+  quantity: number;
+  price: number;
+}
+
+
 export interface NotebookItem {
-  _id : string ;
-  products : {
-    product: string;
-    quantity: number;
-    price: number;
-  }[];
+  _id? : string ;
+  products : ProductItem[];
   total : number ;
   prePayment : number ;
-  date: string;
+  date?: Date;
   paid: boolean;
-  paidDate?: string;
+  paidDate?: Date;
 }
 
 export interface Notebook {

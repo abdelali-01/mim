@@ -16,7 +16,10 @@ export default function BasicTables() {
     <div>
       <PageBreadcrumb pageTitle="Credit clients table" />
       <div className="space-y-6">
-        <ComponentCard title="Credit clients table">
+        <ComponentCard title="Credit clients table" cta={{
+          content : 'Add Notebook' ,
+          onClick : ()=>{}
+        }}>
           <BasicTableOne />
         </ComponentCard>
       </div>

@@ -6,8 +6,8 @@ export const useModal = (initialState: boolean = false) => {
   const [isOpen, setIsOpen] = useState(initialState);
   const [selectedItem, setSelectedItem] = useState<NotebookItem | null>(null);
 
-  const openModal = useCallback((item : NotebookItem) => {
-    setSelectedItem(item);
+  const openModal = useCallback((item? : NotebookItem) => {
+    if(item) setSelectedItem(item);
     setIsOpen(true);
   }, []);
 

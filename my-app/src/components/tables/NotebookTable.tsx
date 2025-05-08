@@ -1,12 +1,13 @@
 'use client';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../ui/table'
 import Badge from '../ui/badge/Badge'
-import { Notebook} from '../../../public/types'
+import { Notebook } from '../../../public/types'
 import React, { useState } from 'react';
 import { BarsArrowDownIcon, BarsArrowUpIcon, PencilSquareIcon } from '@heroicons/react/24/outline'
 import { useModal } from '@/hooks/useModal';
 import { Modal } from '../ui/modal';
 import NotebookModal from '../example/ModalExample/NotebookModal';
+import { formatDateToISO } from '@/utils';
 
 interface Props {
   notebook: Notebook;
@@ -80,10 +81,10 @@ export default function NotebookTable({ notebook }: Props) {
                   <TableRow
                   >
                     <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
-                      {item.date.split('T')[0]}
+                      {formatDateToISO(item.date)}
                     </TableCell>
                     <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
-                      {item.paidDate ? item.paidDate.split('T')[0] : <Badge
+                      {item.paidDate ? formatDateToISO(item.paidDate) : <Badge
                         size='sm'
                         color='light'
                       >Still</Badge>}
@@ -103,14 +104,16 @@ export default function NotebookTable({ notebook }: Props) {
                       <Badge
                         size="sm"
                         color={
-                          item.total === item.prePayment
-                            ? "success"
-                            : "warning"
+                          item.total === 0 && item.prePayment === 0
+                            ? "light"
+                            : item.total > 0 === item.prePayment > 0 ?
+                              "success" : "warning"
                         }
                       >
-                        {item.total === item.prePayment
-                          ? "paid"
-                          : "not paid"}
+                        {item.total === 0 && item.prePayment === 0
+                            ? "still"
+                            : item.total > 0 === item.prePayment > 0 ?
+                              "paid" : "not paid"}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">

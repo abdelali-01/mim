@@ -2,6 +2,30 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Scrollbar track */
+::-webkit-scrollbar {
+  width: 4px;               /* Smaller width */
+  height: 4px;              /* For horizontal scrollbars */
+}
+
+/* Scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  background-color: #a8a8a8; /* Customize the color */
+  border-radius: 10px;
+}
+
+/* Scrollbar track background */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;           /* Reduces width */
+  scrollbar-color: #a8a8a8 transparent; /* thumb color and track */
+}
+
+
 @theme {
   --font-*: initial;
   --font-outfit: Outfit, sans-serif;
