@@ -1,4 +1,3 @@
-// Define the table data using the interface
 export const tableData: import("./types").Notebook[] = [
   {
     _id: "1",
@@ -9,35 +8,59 @@ export const tableData: import("./types").Notebook[] = [
     },
     table: [
       {
-        _id : 'just123',
-        product: "Banner",
-        quantity: 1,
-        price: 3900,
+        _id: "just123",
+        products: [
+          {
+            product: "Banner",
+            quantity: 1,
+            price: 3900,
+          },
+          {
+            product: "Trofie",
+            quantity: 2,
+            price: 4000,
+          }
+        ],
+        total: 7900,
+        prePayment : 4000 ,
         date: new Date("2025-05-07T10:23:45.123Z").toISOString(),
         paid: false,
       },
       {
-        _id : 'just1234',
-        product: "trodat",
-        quantity: 3,
-        price: 1200,
-        date: new Date("2025-05-07T10:23:45.123Z").toISOString(),
+        _id: "just1234",
+        products: [
+          {
+            product: "trodat",
+            quantity: 3,
+            price: 1200,
+          },
+        ],
+        total: 3600,
+        prePayment : 0 ,
+        date: new Date("2025-05-08T11:00:00.000Z").toISOString(),
         paid: false,
       },
       {
-        _id : 'just12345',
-        product: "trodat",
-        quantity: 2,
-        price: 1400,
-        date: new Date("2025-05-07T10:23:45.123Z").toISOString(),
+        _id: "just12345",
+        products: [
+          {
+            product: "trodat",
+            quantity: 2,
+            price: 1400,
+          },
+        ],
+        total: 2800,
+        prePayment : 2800 ,
+        date: new Date("2025-05-09T14:15:30.000Z").toISOString(),
+        paidDate :new Date("2025-05-29T14:15:30.000Z").toISOString() , 
         paid: true,
       },
     ],
-    total: 3900,
-    prePayment: 0,
-    rest: 3900,
+    total: 14300,
+    prePayment: 4000,
+    rest: 10300,
     createdAt: new Date("2025-05-07T10:23:45.123Z").toISOString(),
-    updatedAt: new Date("2025-05-07T10:23:45.123Z").toISOString(),
+    updatedAt: new Date("2025-05-09T14:15:30.000Z").toISOString(),
   },
   {
     _id: "2",
@@ -48,18 +71,24 @@ export const tableData: import("./types").Notebook[] = [
     },
     table: [
       {
-        _id : 'just12345',
-        product: "Flyer",
-        quantity: 1,
-        price: 24900,
-        date: new Date("2025-05-07T10:23:45.123Z").toISOString(),
+        _id: "just12346",
+        products: [
+          {
+            product: "Flyer",
+            quantity: 1,
+            price: 24900,
+          },
+        ],
+        total: 24900,
+        prePayment : 0 ,
+        date: new Date("2025-05-10T09:45:00.000Z").toISOString(),
         paid: false,
       },
     ],
     total: 24900,
     prePayment: 0,
     rest: 24900,
-    createdAt: new Date("2025-05-07T10:23:45.123Z").toISOString(),
-    updatedAt: new Date("2025-05-07T10:23:45.123Z").toISOString(),
+    createdAt: new Date("2025-05-10T09:45:00.000Z").toISOString(),
+    updatedAt: new Date("2025-05-10T09:45:00.000Z").toISOString(),
   },
 ];

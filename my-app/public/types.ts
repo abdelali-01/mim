@@ -7,12 +7,16 @@ export interface Notebook {
   };
   table: {
     _id : string ;
-    product: string;
-    quantity: number;
-    price: number;
-    date: string; // ISO string from backend, can convert to Date if needed
+    products : {
+      product: string;
+      quantity: number;
+      price: number;
+    }[];
+    total : number ;
+    prePayment : number ;
+    date: string;
     paid: boolean;
-    paidDate?: string; // Optional
+    paidDate?: string;
   }[];
   total: number;
   prePayment: number;
