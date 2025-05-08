@@ -14,6 +14,7 @@ export default function FormInModal() {
     console.log("Saving changes...");
     closeModal();
   };
+  
   return (
     <ComponentCard title="Form In Modal">
       <Button size="sm" onClick={openModal}>

@@ -1,15 +1,19 @@
 'use client';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../ui/table'
 import Badge from '../ui/badge/Badge'
-import { Notebook } from '../../../public/types'
+import { Notebook} from '../../../public/types'
 import React, { useState } from 'react';
-import Button from '../ui/button/Button';
+import { BarsArrowDownIcon, BarsArrowUpIcon, PencilSquareIcon } from '@heroicons/react/24/outline'
+import { useModal } from '@/hooks/useModal';
+import { Modal } from '../ui/modal';
+import NotebookModal from '../example/ModalExample/NotebookModal';
 
 interface Props {
   notebook: Notebook;
 }
 
 export default function NotebookTable({ notebook }: Props) {
+  const { isOpen, openModal, closeModal, selectedItem } = useModal();
   const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
 
   const toggleRow = (id: string) => {
@@ -80,8 +84,8 @@ export default function NotebookTable({ notebook }: Props) {
                     </TableCell>
                     <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
                       {item.paidDate ? item.paidDate.split('T')[0] : <Badge
-                      size='sm'
-                      color='light'
+                        size='sm'
+                        color='light'
                       >Still</Badge>}
                     </TableCell>
                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
@@ -109,8 +113,11 @@ export default function NotebookTable({ notebook }: Props) {
                           : "not paid"}
                       </Badge>
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                      <Button size='sm' onClick={() => toggleRow(item._id)}>Open</Button>
+                    <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
+                      <span onClick={() => toggleRow(item._id)}>
+                        {expandedRowId !== item._id ? <BarsArrowDownIcon className='size-7 cursor-pointer' /> : <BarsArrowUpIcon className='size-7 cursor-pointer' />}
+                      </span>
+                      <PencilSquareIcon className='size-7 cursor-pointer' onClick={() => openModal(item)} />
                     </TableCell>
                   </TableRow>
 
@@ -146,6 +153,16 @@ export default function NotebookTable({ notebook }: Props) {
               ))}
             </TableBody>
           </Table>
+
+
+          {isOpen && selectedItem && <Modal
+            isOpen={isOpen}
+            onClose={closeModal}
+            className="max-w-[584px] p-5 lg:p-10"
+          >
+            <NotebookModal notebookData={selectedItem} />
+          </Modal>}
+
         </div>
       </div>
     </div>

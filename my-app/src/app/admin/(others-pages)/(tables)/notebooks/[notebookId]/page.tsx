@@ -10,8 +10,6 @@ import NotebookTable from "@/components/tables/NotebookTable";
 
 export default function NotebookPage() {
     const {notebookId} = useParams();
-    console.log('params' , notebookId);
-    
     const [notebook, setNotebook]= useState<Notebook | null>(null);
     console.log(notebook)
     
