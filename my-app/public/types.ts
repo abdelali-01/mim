@@ -25,7 +25,6 @@ export interface Notebook {
   table: NotebookItem[];
   total: number;
   prePayment: number;
-  rest: number;
   createdAt: string; // from timestamps
   updatedAt: string; // from timestamps
 }

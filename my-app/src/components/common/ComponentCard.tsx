@@ -29,9 +29,9 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
       <div className="px-6 py-5">
         <h3 className="text-base font-medium text-gray-800 dark:text-white/90 flex items-center justify-between">
           <span>{title}</span>
-          <Button size="sm">
+          {cta && <Button size="sm" onClick={cta.onClick}>
             {cta?.content}
-          </Button>
+          </Button>}
         </h3>
         {desc && (
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">

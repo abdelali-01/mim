@@ -7,7 +7,7 @@ import { BarsArrowDownIcon, BarsArrowUpIcon, PencilSquareIcon } from '@heroicons
 import { useModal } from '@/hooks/useModal';
 import { Modal } from '../ui/modal';
 import NotebookModal from '../example/ModalExample/NotebookModal';
-import { formatDateToISO } from '@/utils';
+import { formatDateToISO, getNotebookStatus } from '@/utils';
 
 interface Props {
   notebook: Notebook;
@@ -76,12 +76,14 @@ export default function NotebookTable({ notebook }: Props) {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {notebook.table.map((item) => (
+              {notebook.table.map((item) => {
+                  const {label , color} = getNotebookStatus(item?.total , item?.prePayment) ;
+                return (
                 <React.Fragment key={item._id}>
                   <TableRow
                   >
                     <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
-                      {formatDateToISO(item.date)}
+                      {item.date && formatDateToISO(item.date)}
                     </TableCell>
                     <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
                       {item.paidDate ? formatDateToISO(item.paidDate) : <Badge
@@ -101,19 +103,12 @@ export default function NotebookTable({ notebook }: Props) {
                     </TableCell>
 
                     <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+
                       <Badge
                         size="sm"
-                        color={
-                          item.total === 0 && item.prePayment === 0
-                            ? "light"
-                            : item.total > 0 === item.prePayment > 0 ?
-                              "success" : "warning"
-                        }
+                        color={color}
                       >
-                        {item.total === 0 && item.prePayment === 0
-                            ? "still"
-                            : item.total > 0 === item.prePayment > 0 ?
-                              "paid" : "not paid"}
+                        {label}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
@@ -153,7 +148,8 @@ export default function NotebookTable({ notebook }: Props) {
                     </TableRow>
                   )}
                 </React.Fragment>
-              ))}
+                )
+              })}
             </TableBody>
           </Table>
 
@@ -163,7 +159,7 @@ export default function NotebookTable({ notebook }: Props) {
             onClose={closeModal}
             className="max-w-[584px] p-5 lg:p-10"
           >
-            <NotebookModal notebookData={selectedItem} />
+            <NotebookModal notebookData={selectedItem} closeModal={closeModal}/>
           </Modal>}
 
         </div>

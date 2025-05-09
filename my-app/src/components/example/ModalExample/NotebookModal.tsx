@@ -5,17 +5,17 @@ import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import { NotebookItem, ProductItem } from "../../../../public/types";
 import { useModal } from "@/hooks/useModal";
-import { formatDateToISO } from "@/utils";
+import { formatDateToISO, getNotebookStatus } from "@/utils";
 import Badge from "@/components/ui/badge/Badge";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { PlusCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 interface Props {
   notebookData?: NotebookItem;
+  closeModal: () => void;
 }
 
 
-export default function NotebookModal({ notebookData }: Props) {
-  const { closeModal } = useModal();
+export default function NotebookModal({ notebookData, closeModal }: Props) {
   const [item, setItem] = useState<NotebookItem | null>(null);
 
   const addProduct = () => {
@@ -28,6 +28,25 @@ export default function NotebookModal({ notebookData }: Props) {
 
     setItem(updatedItem);
   }
+
+  const handleInputChange = (field: keyof NotebookItem, value: string | number | Date) => {
+    if (!item) return;
+    setItem({ ...item, [field]: value });
+  };
+
+  const handleProductChange = (index: number, field: string, value: string | number) => {
+    if (!item) return;
+    const updatedProducts = [...item.products];
+    updatedProducts[index] = { ...updatedProducts[index], [field]: value };
+    setItem({ ...item, products: updatedProducts });
+  };
+
+  const handleRemoveProduct = (index: number) => {
+    if (!item) return;
+    const updatedProducts = item.products.filter((_, i) => i !== index);
+    setItem({ ...item, products: updatedProducts });
+  };
+
 
 
   useEffect(() => {
@@ -46,53 +65,69 @@ export default function NotebookModal({ notebookData }: Props) {
     })
   }, [notebookData]);
 
+  
+  // to update the total of the item based on the products
+  useEffect(() => {
+    if (!item) return;
+
+    const calculatedTotal = item.products.reduce(
+      (acc, product) => acc + product.price * product.quantity,
+      0
+    );
+
+    if (calculatedTotal !== item.total) {
+      setItem((prev) => prev ? { ...prev, total: calculatedTotal } : null);
+    }
+  }, [item?.products]);
+
+
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
     closeModal();
   };
 
+  const { label, color } = getNotebookStatus(item?.total, item?.prePayment);
+
   if (!item) return null;
   return (
     <form className="" onSubmit={(e) => { e.preventDefault() }}>
       <div className="max-h-[75vh] overflow-y-auto">
         <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90 flex items-center gap-2 ">
-          <span>{notebookData ? `Credit Information of ${formatDateToISO(item.date)}` : 'Add The credit information'}</span>
+          <span>{notebookData ? `Credit Information of ${item.date && formatDateToISO(item.date)}` : 'Add The credit information'}</span>
           <Badge
             size="sm"
-            color={
-              item.total === 0 && item.prePayment === 0
-                ? "light"
-                : item.total > 0 === item.prePayment > 0 ?
-                  "success" : "warning"
-            }
+            color={color}
           >
-            {item.total === 0 && item.prePayment === 0
-              ? "still"
-              : item.total > 0 === item.prePayment > 0 ?
-                "paid" : "not paid"}
+            {label}
           </Badge>
         </h4>
 
         <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
           <div className="col-span-1">
             <Label>Pre Payment</Label>
-            <Input type="number" defaultValue={item.prePayment} placeholder="The pre payment " />
+            <Input type="number" value={item.prePayment} placeholder="The pre payment "
+              onChange={(e) => handleInputChange("prePayment", +e.target.value)}
+            />
           </div>
 
           <div className="col-span-1">
             <Label>Rest</Label>
-            <Input type="number" placeholder="Rest" defaultValue={item.total - item.prePayment} disabled />
+            <Input type="number" placeholder="Rest" value={item.total - item.prePayment} disabled />
           </div>
 
           <div className="col-span-1">
             <Label>Total</Label>
-            <Input type="number" placeholder="total credit in this date" defaultValue={item.total} />
+            <Input type="number" placeholder="total credit in this date" value={item.total}
+              onChange={(e) => handleInputChange("total", +e.target.value)}
+            />
           </div>
 
           <div className="col-span-1">
             <Label>Paid date</Label>
-            <Input type='date' placeholder="paid date" defaultValue={item.paidDate && formatDateToISO(item.paidDate)} />
+            <Input type='date' placeholder="paid date" value={item.paidDate && formatDateToISO(item.paidDate)}
+              onChange={(e) => handleInputChange("paidDate", e.target.value)}
+            />
           </div>
         </div>
 
@@ -105,28 +140,36 @@ export default function NotebookModal({ notebookData }: Props) {
           </h4>
         </div> :
           item.products.map(({ product, price, quantity }, i) => (
-            <div key={product + Date.now()}>
+            <div key={i}>
               <h4 className="ms-3 font-medium text-gray-800 dark:text-white/90 mt-6 mb-3 flex items-center justify-between">
                 <span>Product {i + 1}</span>
-                <TrashIcon className="size-7 cursor-pointer text-brand-500" />
+                <TrashIcon className="size-7 cursor-pointer text-brand-500"
+                  onClick={() => handleRemoveProduct(i)}
+                />
               </h4>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-3">
                 <div className="col-span-3">
                   <Label>Product</Label>
-                  <Input type="text" defaultValue={product} placeholder="The product name" />
+                  <Input type="text" value={product} placeholder="The product name"
+                    onChange={(e) => handleProductChange(i, 'product', e.target.value)}
+                  />
                 </div>
 
                 <div className="col-span-1">
                   <Label>Price</Label>
-                  <Input type="number" placeholder="Rest" defaultValue={price} />
+                  <Input type="number" placeholder="Rest" value={price}
+                    onChange={(e) => handleProductChange(i, 'price', +e.target.value)}
+                  />
                 </div>
                 <div className="col-span-1">
                   <Label>Quantity</Label>
-                  <Input type='number' min="1" placeholder="Quantity of product" defaultValue={quantity} />
+                  <Input type='number' min="1" placeholder="Quantity of product" value={quantity}
+                    onChange={(e) => handleProductChange(i, 'quantity', +e.target.value)}
+                  />
                 </div>
                 <div className="col-span-1">
                   <Label>Total</Label>
-                  <Input type="number" placeholder="Total" defaultValue={price * quantity} />
+                  <Input type="number" placeholder="Total" value={price * quantity} disabled />
                 </div>
 
 
@@ -138,7 +181,7 @@ export default function NotebookModal({ notebookData }: Props) {
         }
 
         <div className="my-4 flex justify-end" onClick={addProduct}>
-          <Button size="sm">Add Product</Button>
+          <PlusCircleIcon className="size-10 cursor-pointer text-brand-500"/>
         </div>
       </div>
 
