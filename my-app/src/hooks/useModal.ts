@@ -2,7 +2,7 @@
 import { useState, useCallback } from "react";
 import { NotebookItem } from "../../public/types";
 
-export const useModal = (initialState: boolean = false) => {
+export const useModal = (initialState: boolean = false, initilizeError? : ()=> void) => {
   const [isOpen, setIsOpen] = useState(initialState);
   const [selectedItem, setSelectedItem] = useState<NotebookItem | null>(null);
 
@@ -14,7 +14,8 @@ export const useModal = (initialState: boolean = false) => {
   const closeModal = useCallback(() => {
     setIsOpen(false);
     setSelectedItem(null);
-  }, []);
+    if (initilizeError) initilizeError();
+  }, [initialState]);
   
   const toggleModal = useCallback(() => setIsOpen((prev) => !prev), []);
 

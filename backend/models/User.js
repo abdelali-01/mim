@@ -28,7 +28,6 @@ const userSchema = new mongoose.Schema(
     },
     role : {
         type : String ,
-        enum : ['super' , 'sub-super' , 'manager' /* manage only the orders */ , 'reader' /* read only the orders*/] ,
     }
   },
   { timestamps: true }

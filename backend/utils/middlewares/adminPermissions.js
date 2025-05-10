@@ -1,11 +1,16 @@
 export const rolePermissions = (roles) => {
   return (req, res, next) => {
-    const user = req.user;
+    const user = req?.user;
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const hasPermission = roles.some((role) => user.roles.includes(role));
+     if (!user || !user.role) {
+      return res.status(401).json({ message: "Unauthorized or role missing" });
+    }
+
+    const hasPermission = roles.includes(user.role);
+    
     if (!hasPermission) {
       return res.status(403).json({ message: "Forbidden" });
     }
@@ -15,7 +20,7 @@ export const rolePermissions = (roles) => {
 };
 
 export const addAdminPermissions = (req, res, next) => {
-  const user = req.user;
+  const user = req?.user;
   if (!user) {
     return res.status(401).json({ message: "Unauthorized" });
   }

@@ -12,7 +12,10 @@ import session from "express-session";
 const app = express();
 
 dotenv.config();
-app.use(cors());
+app.use(cors({
+  origin : process.env.FRONTEND_URL ,
+  credentials : true
+}));
 app.use(express.json());
 app.use(helmet());
 app.use(cookieParser());
@@ -27,13 +30,15 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+
+
 mongoose.connect(process.env.DATABASE_URL).then(() => {
   console.log("Connected to database");
   app.listen(process.env.PORT, () => {
     console.log(`Server running at port: ${process.env.PORT}`);
   });
 }).catch((err) => {
-  console.error("Database connection error:", err.message);
+  console.error("Database connection error:", err);
 });
 
 app.use(

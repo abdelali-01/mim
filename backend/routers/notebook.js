@@ -1,5 +1,6 @@
 import express from "express";
 import Notebook from "../models/Notebook.js"; // Adjust the path as needed
+import { rolePermissions } from "../utils/middlewares/adminPermissions.js";
 
 const router = express.Router();
 
@@ -39,74 +40,30 @@ router.get("/:id", rolePermissions(['super' , 'sub-super']) ,async (req, res) =>
 
 // Update a notebook by ID or add an item to the table
 router.put("/:id", rolePermissions(['super' , 'sub-super']) , async (req, res) => {
-  try {
-    // Check if the request is to add an item to the table
-    if (req.body.tableItem) {
-      const updatedNotebook = await Notebook.findOneAndUpdate(
-        { _id: req.params.id },
-        { $push: { table: req.body.tableItem } }, // Add the new item to the table array
-        { new: true, runValidators: true } // Return the updated document and validate the new item
-      );
-      if (!updatedNotebook) {
-        return res.status(404).json({ error: "Notebook not found" });
-      }
-      return res.status(200).json(updatedNotebook);
+ try {
+    const { table } = req.body;
+
+    if (!Array.isArray(table) || table.length === 0) {
+      return res.status(400).json({ message: "Table data is required and must be a non-empty array." });
     }
 
-    // Otherwise, perform a general update
     const updatedNotebook = await Notebook.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body }, // Update the provided fields
-      { new: true, runValidators: true } // Return the updated document and validate the changes
+      { table },
+      { new: true, runValidators: true }
     );
+
     if (!updatedNotebook) {
-      return res.status(404).json({ error: "Notebook not found" });
+      return res.status(404).json({ message: "Notebook not found." });
     }
+
     res.status(200).json(updatedNotebook);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("Error updating notebook:", error);
+    res.status(500).json({ message: "Server error while updating notebook." });
   }
 });
 
-// delete an item from the table
-// PATCH / :id?method=remove
-router.patch("/:id", rolePermissions(['super']) , async (req, res) => {
-  // Check if the request is to remove an item from the table
-  const { method } = req.query;
-  try {
-    if (method === "remove") {
-      const updatedNotebook = await Notebook.findOneAndUpdate(
-        { _id: req.params.id },
-        { $pull: { table: { _id: req.body.itemId } } }, // Remove the item with the specified ID from the table array
-        { new: true, runValidators: true } // Return the updated document and validate the changes
-      );
-      if (!updatedNotebook) {
-        return res.status(404).json({ error: "Notebook not found" });
-      }
-      return res.status(200).json(updatedNotebook);
-    }
-
-    // find the notebook by ID and update the table item
-    const notebook = await Notebook.findById(req.params.id);
-    if (!notebook) {
-      return res.status(404).json({ error: "Notebook not found" });
-    }
-
-    // find the existing item in the table array
-    const item = notebook.table.id(req.body.itemId);
-    if (!item) {
-      return res.status(404).json({ error: "Item not found in the table" });
-    }
-
-    // merge the existing item with the new data
-    Object.assign(item, req.body);
-    // save the updated notebook
-    const updatedNotebook = await notebook.save();
-    res.status(200).json(updatedNotebook);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
 
 // Delete a notebook by ID
 router.delete("/:id", rolePermissions(['super']) ,async (req, res) => {
