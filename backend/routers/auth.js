@@ -28,6 +28,28 @@ router.get("/", (req, res) => {
   }
 });
 
+// get the admins 
+router.get('/admins' , rolePermissions(['super' , 'sub-super']) ,async (req, res) => {
+  try {
+    const admins = await User.find({isAdmin : true});
+    if(!admins){
+      return res.status(404).json({
+        message : 'No admin found !'
+      })
+    }
+
+    res.status(200).json({
+      message : 'success',
+      admins ,
+    });
+  } catch (error) {
+    console.log('Error during getting the admins' , error);
+          res
+        .status(500)
+        .json({ message: "Error getting admin accounts", error: err.message });
+  }
+})
+
 // Signup route
 router.post(
   "/signup",

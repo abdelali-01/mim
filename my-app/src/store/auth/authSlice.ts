@@ -1,3 +1,4 @@
+import { User } from "@/components/auth/SignUpForm";
 import { createSlice } from "@reduxjs/toolkit";
 
 // {
@@ -8,7 +9,11 @@ import { createSlice } from "@reduxjs/toolkit";
 //         role : 'super',
 //  }
 
-const initialState = {
+const initialState : {
+    user : User | null;
+    isAdmin : boolean ;
+    isFetching :boolean 
+} = {
     user : null ,
     isAdmin : true ,
     isFetching : false ,

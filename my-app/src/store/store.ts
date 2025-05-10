@@ -3,14 +3,15 @@ import authReducer from './auth/authSlice'
 import errorReducer from './error/errorSlice'
 import alertReducer from './alert/alertSlice';
 import notebookReducer from './notebooks/notebookSlice';
-
+import accountReducer from './accounts/accountsSlice';
 
 export const store = configureStore({
     reducer : {
         auth : authReducer ,
         error : errorReducer ,
         alert : alertReducer ,
-        notebooks : notebookReducer
+        notebooks : notebookReducer ,
+        accounts : accountReducer
     }
 });
 

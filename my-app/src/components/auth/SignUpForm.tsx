@@ -10,12 +10,13 @@ import { AppDispatch } from "@/store/store";
 import { registerUser } from "@/store/auth/authHandler";
 
 export interface User {
+  _id? : string ;
   username: string;
   email: string;
   phone: string;
-  password: string;
+  password?: string;
   isAdmin?: boolean;
-  role: string
+  role?: string
 }
 
 const userState = {
