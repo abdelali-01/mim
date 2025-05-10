@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import StoreProvider from './StoreProvider';
 import AuthInitializer from './AuthInitializer';
 import ErrorChecking from './ErrorChecking';
+import AlertPlayer from './AlertPlayer';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${outfit.className} dark:bg-gray-900`}>
         <StoreProvider>
+          <AlertPlayer/>
           <ErrorChecking/>
           <AuthInitializer/>
           <ThemeProvider>

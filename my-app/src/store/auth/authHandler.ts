@@ -4,15 +4,23 @@ import { AppDispatch } from '../store';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { setError } from '../error/errorSlice';
 import { User } from '@/components/auth/SignUpForm';
+import { setSuccessAlert } from '../alert/alertSlice';
 const server = process.env.NEXT_PUBLIC_SERVER;
 
-export const registerUser = (user: User) => async (dispatch: AppDispatch) => {
+export const registerUser = (user: User, clearFrom: () => void) => async (dispatch: AppDispatch) => {
     dispatch(setIsFeching(true));
     try {
-        const res = await axios.post(`${server}/api/auth/signup`, user , {withCredentials : true});
-        if(res.statusText === 'OK'){
+        const res = await axios.post(`${server}/api/auth/signup`, user, { withCredentials: true });
+        if(res){
             console.log('client registred');
+            dispatch(setSuccessAlert('Your client is registred successfully'))
+            clearFrom();
+            
+            setTimeout(() => {
+                dispatch(setSuccessAlert(null)); // Clear alert after 3 seconds
+            }, 3000);
         }
+
     } catch (error) {
         console.log('Error during registring the user ', error);
         const errorDetails = {

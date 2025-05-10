@@ -20,19 +20,15 @@ export default function Alerts() {
           <Alert
             variant="success"
             title="Success Message"
-            message="Be cautious when performing this action."
-            showLink={true}
-            linkHref="/"
-            linkText="Learn more"
           />
-          <Alert
+          {/* <Alert
             variant="success"
             title="Success Message"
             message="Be cautious when performing this action."
             showLink={false}
-          />
+          /> */}
         </ComponentCard>
-        <ComponentCard title="Warning Alert">
+        {/* <ComponentCard title="Warning Alert">
           <Alert
             variant="warning"
             title="Warning Message"
@@ -79,7 +75,7 @@ export default function Alerts() {
             message="Be cautious when performing this action."
             showLink={false}
           />
-        </ComponentCard>
+        </ComponentCard> */}
       </div>
     </div>
   );

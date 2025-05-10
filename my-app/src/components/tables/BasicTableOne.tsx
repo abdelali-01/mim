@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -12,12 +12,24 @@ import {
 import Badge from "../ui/badge/Badge";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
-import { tableData } from "../../../public/data";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { fetchNotebooks } from "@/store/notebooks/notebookHandler";
+import { getNotebookStatus } from "@/utils";
 
 
 export default function BasicTableOne() {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const {notebooks , isLoading} = useSelector((state : RootState) => state.notebooks);
 
+  useEffect(()=>{
+    if(!notebooks) {
+      dispatch(fetchNotebooks())
+    }
+  },[notebooks , dispatch]);
+
+  if(isLoading) return (<div>Loading...</div>)
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
@@ -55,45 +67,41 @@ export default function BasicTableOne() {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {tableData.map((order) => (
-                <TableRow key={order._id} 
-                onClick={()=>{router.push(`/admin/notebooks/${order._id}`)}}
+              {notebooks && notebooks.map((notebook) => {
+              const {label , color} = getNotebookStatus(notebook.total , notebook.prePayment)
+              return(
+                <TableRow key={notebook._id} 
+                onClick={()=>{router.push(`/admin/notebooks/${notebook._id}`)}}
                 >
                   <TableCell className="px-5 py-4 sm:px-6 text-start">
                     <div className="flex items-center gap-3">
                       <div>
                         <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                          {order.client.username}
+                          {notebook.client.username}
                         </span>
                         <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-                          {order.client.phone}
+                          {notebook.client.phone}
                         </span>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {formatDistanceToNow(order.updatedAt, { addSuffix: true })}
+                    {formatDistanceToNow(notebook.updatedAt, { addSuffix: true })}
                   </TableCell>
 
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     <Badge
                       size="sm"
-                      color={
-                        order.total === 0
-                          ? "success"
-                          : "warning"
-                      }
+                      color={color}
                     >
-                      {order.total === 0
-                        ? "paid"
-                        : "not paid"}
+                      {label}
                     </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {order.total - order.prePayment}DA
+                    {notebook.total - notebook.prePayment}DA
                   </TableCell>
                 </TableRow>
-              ))}
+              )})}
             </TableBody>
           </Table>
         </div>

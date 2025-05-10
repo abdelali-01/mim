@@ -43,7 +43,7 @@ export default function SignUpForm() {
 
   const submitHandler = (e : React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault();
-    dispatch(registerUser(user));
+    dispatch(registerUser(user , ()=> setUser(userState)));
   }
 
   return (
