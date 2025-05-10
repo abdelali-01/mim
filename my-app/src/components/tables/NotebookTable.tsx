@@ -21,149 +21,247 @@ export default function NotebookTable({ notebook }: Props) {
     setExpandedRowId(prev => prev === id ? null : id);
   }
 
+  const { color, label } = getNotebookStatus(notebook.total, notebook.prePayment);
+
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+    <>
       <div className="max-w-full overflow-x-auto">
         <div className="min-w-[1000px]">
-          <Table>
-            {/* Table Header */}
-            <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
-              <TableRow>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Date
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Paid Date
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Pre-payment
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Rest
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Total Price
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Status
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Actions
-                </TableCell>
-              </TableRow>
-            </TableHeader>
-
-            {/* Table Body */}
-            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {notebook.table.map((item) => {
-                  const {label , color} = getNotebookStatus(item?.total , item?.prePayment) ;
-                return (
-                <React.Fragment key={item._id}>
-                  <TableRow
+          <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+            <Table>
+              <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+                <TableRow>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                   >
-                    <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
-                      {item.date && formatDateToISO(item.date)}
-                    </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
-                      {item.paidDate ? formatDateToISO(item.paidDate) : <Badge
-                        size='sm'
-                        color='light'
-                      >Still</Badge>}
-                    </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                      {item.prePayment} DA
-                    </TableCell>
+                    Client
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
+                    Phone
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
+                    Pre-payment
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
+                    Rest
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
+                    Total Price
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
+                    Status
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
+                    Actions
+                  </TableCell>
+                </TableRow>
+              </TableHeader>
 
-                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                      {item.total - item.prePayment} DA
-                    </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                      {item.total} DA
-                    </TableCell>
+              <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+                <TableRow
+                >
+                  <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
+                    {notebook.client.username}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
+                    {notebook.client.phone}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {notebook.prePayment} DA
+                  </TableCell>
 
-                    <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {notebook.total - notebook.prePayment} DA
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {notebook.total} DA
+                  </TableCell>
 
-                      <Badge
-                        size="sm"
-                        color={color}
+                  <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                    <Badge
+                      size="sm"
+                      color={color}
+                    >
+                      {label}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
+                    {/* <PencilSquareIcon className='size-7 cursor-pointer' onClick={() => openModal(item)} /> */}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+          {/* {isOpen && selectedItem && <Modal
+            isOpen={isOpen}
+            onClose={closeModal}
+            className="max-w-[584px] p-5 lg:p-10"
+          >
+            <NotebookModal notebookData={selectedItem} closeModal={closeModal} />
+          </Modal>} */}
+        </div>
+      </div>
+
+      <div className="max-w-full overflow-x-auto">
+        <div className="min-w-[1000px]">
+          <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+            <Table>
+              {/* Table Header */}
+              <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+                <TableRow>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
+                    Date
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
+                    Paid Date
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
+                    Pre-payment
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
+                    Rest
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
+                    Total Price
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
+                    Status
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
+                    Actions
+                  </TableCell>
+                </TableRow>
+              </TableHeader>
+
+              {/* Table Body */}
+              <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+                {notebook.table.map((item) => {
+                  const { label, color } = getNotebookStatus(item?.total, item?.prePayment);
+                  return (
+                    <React.Fragment key={item._id}>
+                      <TableRow
                       >
-                        {label}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
-                      <span onClick={() => toggleRow(item._id)}>
-                        {expandedRowId !== item._id ? <BarsArrowDownIcon className='size-7 cursor-pointer' /> : <BarsArrowUpIcon className='size-7 cursor-pointer' />}
-                      </span>
-                      <PencilSquareIcon className='size-7 cursor-pointer' onClick={() => openModal(item)} />
-                    </TableCell>
-                  </TableRow>
+                        <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
+                          {item.date && formatDateToISO(item.date)}
+                        </TableCell>
+                        <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
+                          {item.paidDate ? formatDateToISO(item.paidDate) : <Badge
+                            size='sm'
+                            color='light'
+                          >Still</Badge>}
+                        </TableCell>
+                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                          {item.prePayment} DA
+                        </TableCell>
 
-                  {expandedRowId === item._id && (
-                    <TableRow>
-                      <TableCell colSpan={7} className="px-6 py-4  divide-gray-100 dark:divide-white/[0.05]">
-                        <div className="overflow-x-auto">
-                          <table className="w-full text-sm">
-                            <thead className="bg-gray-100 dark:bg-gray-800">
-                              <tr>
-                                <th className="text-left p-2  dark:text-gray-400  text-gray-500">Product</th>
-                                <th className="text-left p-2  dark:text-gray-400  text-gray-500">Quantity</th>
-                                <th className="text-left p-2  dark:text-gray-400  text-gray-500">Price</th>
-                                <th className="text-left p-2  dark:text-gray-400  text-gray-500">Total</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {item.products.map((prod, i) => (
-                                <tr key={i}>
-                                  <td className="p-2  dark:text-gray-400  text-gray-500">{prod.product}</td>
-                                  <td className="p-2  dark:text-gray-400  text-gray-500">{prod.quantity}</td>
-                                  <td className="p-2  dark:text-gray-400  text-gray-500">{prod.price} DA</td>
-                                  <td className="p-2  dark:text-gray-400  text-gray-500">{prod.quantity * prod.price} DA</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </React.Fragment>
-                )
-              })}
-            </TableBody>
-          </Table>
+                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                          {item.total - item.prePayment} DA
+                        </TableCell>
+                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                          {item.total} DA
+                        </TableCell>
 
+                        <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
 
+                          <Badge
+                            size="sm"
+                            color={color}
+                          >
+                            {label}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
+                          <span onClick={() => toggleRow(item._id)}>
+                            {expandedRowId !== item._id ? <BarsArrowDownIcon className='size-7 cursor-pointer' /> : <BarsArrowUpIcon className='size-7 cursor-pointer' />}
+                          </span>
+                          <PencilSquareIcon className='size-7 cursor-pointer' onClick={() => openModal(item)} />
+                        </TableCell>
+                      </TableRow>
+
+                      {expandedRowId === item._id && (
+                        <TableRow>
+                          <TableCell colSpan={7} className="px-6 py-4  divide-gray-100 dark:divide-white/[0.05]">
+                            <div className="overflow-x-auto">
+                              <table className="w-full text-sm">
+                                <thead className="bg-gray-100 dark:bg-gray-800">
+                                  <tr>
+                                    <th className="text-left p-2  dark:text-gray-400  text-gray-500">Product</th>
+                                    <th className="text-left p-2  dark:text-gray-400  text-gray-500">Quantity</th>
+                                    <th className="text-left p-2  dark:text-gray-400  text-gray-500">Price</th>
+                                    <th className="text-left p-2  dark:text-gray-400  text-gray-500">Total</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {item.products.map((prod, i) => (
+                                    <tr key={i}>
+                                      <td className="p-2  dark:text-gray-400  text-gray-500">{prod.product}</td>
+                                      <td className="p-2  dark:text-gray-400  text-gray-500">{prod.quantity}</td>
+                                      <td className="p-2  dark:text-gray-400  text-gray-500">{prod.price} DA</td>
+                                      <td className="p-2  dark:text-gray-400  text-gray-500">{prod.quantity * prod.price} DA</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </React.Fragment>
+                  )
+                })}
+              </TableBody>
+            </Table>
+
+          </div>
           {isOpen && selectedItem && <Modal
             isOpen={isOpen}
             onClose={closeModal}
             className="max-w-[584px] p-5 lg:p-10"
           >
-            <NotebookModal notebookData={selectedItem} closeModal={closeModal}/>
+            <NotebookModal notebookData={selectedItem} closeModal={closeModal} />
           </Modal>}
-
         </div>
       </div>
-    </div>
+    </>
   )
 }

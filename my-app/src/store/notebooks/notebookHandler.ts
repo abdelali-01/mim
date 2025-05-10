@@ -1,21 +1,65 @@
 import axios from "axios";
 import { AppDispatch } from "../store";
-import { setIsLoading, setNotebooks } from "./notebookSlice";
+import { setIsLoading, setNotebooks, setSelectedNotebook } from "./notebookSlice";
+import { Notebook, NotebookItem } from "../../../public/types";
+import { setError } from "../error/errorSlice";
+import { setSuccessAlert } from "../alert/alertSlice";
 
 const server = process.env.NEXT_PUBLIC_SERVER;
 
 
-export const fetchNotebooks = () => async (dispatch:AppDispatch) => {
+export const fetchNotebooks = () => async (dispatch: AppDispatch) => {
     dispatch(setIsLoading(true));
     try {
-        const res = await axios.get(`${server}/api/notebooks`, {withCredentials : true});
-        if(res.statusText === 'OK'){
+        const res = await axios.get(`${server}/api/notebooks`, { withCredentials: true });
+        if (res.statusText === 'OK') {
             dispatch(setNotebooks(res.data))
         }
     } catch (error) {
-        console.log('Error during fetching the notebooks' , error);
-        
-    }finally {
+        console.log('Error during fetching the notebooks', error);
+        dispatch(setError({
+            message: error.response.data.message || error.message
+        }));
+    } finally {
         dispatch(setIsLoading(false));
     }
 }
+
+export const findNotebook = (notebooks: Notebook[], notebookId: string | string[]) => async (dispatch: AppDispatch) => {
+    dispatch(setIsLoading(true));
+    try {
+        const finded = notebooks.find(n => n._id == notebookId);
+        console.log('finded one one handler', finded);
+
+        if (finded) {
+            dispatch(setSelectedNotebook(finded));
+        }
+    } catch (error) {
+        console.log('error during find the notebook ', error);
+        dispatch(setError({
+            message: error.response.data.message || error.message
+        }));
+    } finally {
+        dispatch(setIsLoading(false));
+    }
+}
+
+export const updateNotebook = (item: NotebookItem , notebookId : string | string[] , closeModal : ()=> void) => async (dispatch: AppDispatch) => {
+    try {
+        const res = await axios.put(`${server}/api/notebooks/${notebookId}` , {item} , {withCredentials : true});
+        if(res.statusText === 'OK'){
+            dispatch(fetchNotebooks());
+            dispatch(setSuccessAlert('Your update has been successfully'));
+            closeModal();
+            
+            setTimeout(()=>{
+                dispatch(setSuccessAlert(null));
+            }, 3000)
+        }
+    } catch (error) {
+        console.log('error during adding a notebookItem', error);
+        dispatch(setError({
+            message: error.response.data.message || error.message
+        }));
+    }
+} 

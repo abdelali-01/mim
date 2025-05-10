@@ -39,28 +39,37 @@ router.get("/:id", rolePermissions(['super' , 'sub-super']) ,async (req, res) =>
 });
 
 // Update a notebook by ID or add an item to the table
-router.put("/:id", rolePermissions(['super' , 'sub-super']) , async (req, res) => {
- try {
-    const { table } = req.body;
+router.put("/:id", rolePermissions(["super", "sub-super"]), async (req, res) => {
+  try {
+    const { item } = req.body;
 
-    if (!Array.isArray(table) || table.length === 0) {
-      return res.status(400).json({ message: "Table data is required and must be a non-empty array." });
+    if (!item || typeof item !== "object") {
+      return res.status(400).json({ message: "A valid item is required." });
     }
 
-    const updatedNotebook = await Notebook.findByIdAndUpdate(
-      req.params.id,
-      { table },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedNotebook) {
+    const notebook = await Notebook.findById(req.params.id);
+    if (!notebook) {
       return res.status(404).json({ message: "Notebook not found." });
     }
 
-    res.status(200).json(updatedNotebook);
+    // If the item has an _id, it's an update
+    if (item._id) {
+      const index = notebook.table.findIndex((entry) => entry._id.toString() === item._id);
+      if (index !== -1) {
+        notebook.table[index] = item; // update the existing item
+      } else {
+        return res.status(404).json({ message: "Item not found in notebook." });
+      }
+    } else {
+      notebook.table.push(item); // add new item
+    }
+
+    await notebook.save();
+
+    res.status(200).json(notebook);
   } catch (error) {
-    console.error("Error updating notebook:", error);
-    res.status(500).json({ message: "Server error while updating notebook." });
+    console.error("Error updating notebook item:", error);
+    res.status(500).json({ message: "Server error while updating notebook item." });
   }
 });
 

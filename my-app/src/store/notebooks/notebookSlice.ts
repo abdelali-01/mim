@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Notebook, NotebookItem } from "../../../public/types";
+import { Notebook} from "../../../public/types";
 
 
 
 const initialState : {
     notebooks : Notebook[] | null;
     isLoading : boolean ;
-    selectedNotebook : NotebookItem | null
+    selectedNotebook : Notebook | null
 } = {
     notebooks : null ,
     selectedNotebook : null ,

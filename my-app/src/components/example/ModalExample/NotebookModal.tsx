@@ -7,6 +7,10 @@ import { NotebookItem} from "../../../../public/types";
 import { formatDateToISO, getNotebookStatus } from "@/utils";
 import Badge from "@/components/ui/badge/Badge";
 import { PlusCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { useParams } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store/store";
+import { updateNotebook } from "@/store/notebooks/notebookHandler";
 
 interface Props {
   notebookData?: NotebookItem;
@@ -16,6 +20,8 @@ interface Props {
 
 export default function NotebookModal({ notebookData, closeModal }: Props) {
   const [item, setItem] = useState<NotebookItem | null>(null);
+  const {notebookId} = useParams();
+  const dispatch = useDispatch<AppDispatch>();
 
   const addProduct = () => {
     if (!item) return;
@@ -46,8 +52,6 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
     setItem({ ...item, products: updatedProducts });
   };
 
-
-
   useEffect(() => {
     if (notebookData) setItem(notebookData)
     else setItem({
@@ -77,13 +81,13 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
     if (calculatedTotal !== item.total) {
       setItem((prev) => prev ? { ...prev, total: calculatedTotal } : null);
     }
-  }, [item?.products]);
+  }, [item]);
 
 
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
-    closeModal();
+    dispatch(updateNotebook(item , notebookId , ()=> closeModal()));
   };
 
   const { label, color } = getNotebookStatus(item?.total, item?.prePayment);

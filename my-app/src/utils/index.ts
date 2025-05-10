@@ -1,5 +1,5 @@
-export function formatDateToISO(date: Date): string {
-    return date.toISOString().split('T')[0];
+export function formatDateToISO(date: string): string {
+    return date.split('T')[0];
 }
 
 export function getNotebookStatus(total: number, prePayment: number) {
