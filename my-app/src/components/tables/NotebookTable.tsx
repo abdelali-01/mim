@@ -2,12 +2,16 @@
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../ui/table'
 import Badge from '../ui/badge/Badge'
 import { Notebook } from '../../../public/types'
-import React, { useState } from 'react';
-import { BarsArrowDownIcon, BarsArrowUpIcon, PencilSquareIcon } from '@heroicons/react/24/outline'
+import React, { useRef, useState } from 'react';
+import { BarsArrowDownIcon, BarsArrowUpIcon, PencilSquareIcon, PrinterIcon } from '@heroicons/react/24/outline'
 import { useModal } from '@/hooks/useModal';
 import { Modal } from '../ui/modal';
 import NotebookModal from '../example/ModalExample/NotebookModal';
 import { formatDateToISO, getNotebookStatus } from '@/utils';
+import Image from 'next/image';
+import { useImageModal } from '@/hooks/useImage';
+import ImageModal from '../example/ImageModal';
+import { useReactToPrint } from 'react-to-print';
 
 interface Props {
   notebook: Notebook;
@@ -23,13 +27,28 @@ export default function NotebookTable({ notebook }: Props) {
 
   const { color, label } = getNotebookStatus(notebook.total, notebook.prePayment);
 
+  const {
+    imageModalOpen,
+    selectedImage,
+    openImageModal,
+    closeImageModal
+  } = useImageModal();
+
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: `Notebook-${notebook.client.username}`,
+  });
+
+
   return (
-    <>
-      <div className="max-w-full overflow-x-auto">
-        <div className="min-w-[1000px]">
+    <div ref={printRef}>
+      <div className="max-w-full overflow-x-auto print:overflow-visible mb-5">
+        <div className="min-w-[1000px] print:min-w-0 print:w-full">
           <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-            <Table>
-              <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+            <Table className='print-table'>
+              <TableHeader className="print-header border-b border-gray-100 dark:border-white/[0.05]">
                 <TableRow>
                   <TableCell
                     isHeader
@@ -69,7 +88,7 @@ export default function NotebookTable({ notebook }: Props) {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                    className="no-print px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                   >
                     Actions
                   </TableCell>
@@ -100,33 +119,29 @@ export default function NotebookTable({ notebook }: Props) {
                     <Badge
                       size="sm"
                       color={color}
+                      className='badge'
                     >
                       {label}
                     </Badge>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
-                    {/* <PencilSquareIcon className='size-7 cursor-pointer' onClick={() => openModal(item)} /> */}
+                  <TableCell className="no-print px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
+                    <PrinterIcon className='size-7 cursor-pointer text-brand-500'
+                      onClick={handlePrint}
+                    />
                   </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </div>
-          {/* {isOpen && selectedItem && <Modal
-            isOpen={isOpen}
-            onClose={closeModal}
-            className="max-w-[584px] p-5 lg:p-10"
-          >
-            <NotebookModal notebookData={selectedItem} closeModal={closeModal} />
-          </Modal>} */}
         </div>
       </div>
 
-      <div className="max-w-full overflow-x-auto">
-        <div className="min-w-[1000px]">
+      <div className="max-w-full overflow-x-auto print:overflow-visible">
+        <div className="min-w-[1000px] print:min-w-0 print:w-full">
           <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-            <Table>
+            <Table className='print-table'>
               {/* Table Header */}
-              <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+              <TableHeader className="print-header border-b border-gray-100 dark:border-white/[0.05]">
                 <TableRow>
                   <TableCell
                     isHeader
@@ -166,7 +181,7 @@ export default function NotebookTable({ notebook }: Props) {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                    className="no-print px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                   >
                     Actions
                   </TableCell>
@@ -206,15 +221,17 @@ export default function NotebookTable({ notebook }: Props) {
                           <Badge
                             size="sm"
                             color={color}
+                            className='badge'
+
                           >
                             {label}
                           </Badge>
                         </TableCell>
-                        <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
+                        <TableCell className="no-print px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
                           <span onClick={() => toggleRow(item._id)}>
-                            {expandedRowId !== item._id ? <BarsArrowDownIcon className='size-7 cursor-pointer' /> : <BarsArrowUpIcon className='size-7 cursor-pointer' />}
+                            {expandedRowId !== item._id ? <BarsArrowDownIcon className='size-7 cursor-pointer text-brand-500' /> : <BarsArrowUpIcon className='size-7 cursor-pointer text-brand-500' />}
                           </span>
-                          <PencilSquareIcon className='size-7 cursor-pointer' onClick={() => openModal(item)} />
+                          <PencilSquareIcon className='size-7 cursor-pointer text-brand-500' onClick={() => openModal(item)} />
                         </TableCell>
                       </TableRow>
 
@@ -234,7 +251,14 @@ export default function NotebookTable({ notebook }: Props) {
                                 <tbody>
                                   {item.products.map((prod, i) => (
                                     <tr key={i}>
-                                      <td className="p-2  dark:text-gray-400  text-gray-500">{prod.product}</td>
+                                      <td className="p-2  dark:text-gray-400  text-gray-500">
+                                        <div className='flex items-center gap-3'>
+                                          {prod.image && <Image src={prod.image} alt='product image' width={60} height={60}
+                                            className='object-cover cursor-pointer'
+                                            onClick={() => prod.image && openImageModal(prod.image)} />}
+                                          <span>{prod.product}</span>
+                                        </div>
+                                      </td>
                                       <td className="p-2  dark:text-gray-400  text-gray-500">{prod.quantity}</td>
                                       <td className="p-2  dark:text-gray-400  text-gray-500">{prod.price} DA</td>
                                       <td className="p-2  dark:text-gray-400  text-gray-500">{prod.quantity * prod.price} DA</td>
@@ -246,6 +270,48 @@ export default function NotebookTable({ notebook }: Props) {
                           </TableCell>
                         </TableRow>
                       )}
+
+                      {/* print version */}
+                      <TableRow className="hidden print:table-row ms-8">
+                        <TableCell colSpan={7} className="px-6 py-4 align-top">
+                          <div className="overflow-visible">
+                            <table className="w-full text-sm border border-gray-200">
+                              <thead className="bg-gray-100">
+                                <tr>
+                                  <th className="text-left p-2 text-gray-500">Product</th>
+                                  <th className="text-left p-2 text-gray-500">Quantity</th>
+                                  <th className="text-left p-2 text-gray-500">Price</th>
+                                  <th className="text-left p-2 text-gray-500">Total</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {item.products.map((prod, i) => (
+                                  <tr key={i}>
+                                    <td className="p-2 text-gray-700">
+                                      <div className="flex items-center gap-3">
+                                        {prod.image && (
+                                          <Image
+                                            src={prod.image}
+                                            alt="product"
+                                            width={250}
+                                            height={150}
+                                            className="object-cover border border-gray-300"
+                                          />
+                                        )}
+                                        <span>{prod.product}</span>
+                                      </div>
+                                    </td>
+                                    <td className="p-2 text-gray-700">{prod.quantity}</td>
+                                    <td className="p-2 text-gray-700">{prod.price} DA</td>
+                                    <td className="p-2 text-gray-700">{prod.quantity * prod.price} DA</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+
                     </React.Fragment>
                   )
                 })}
@@ -260,8 +326,17 @@ export default function NotebookTable({ notebook }: Props) {
           >
             <NotebookModal notebookData={selectedItem} closeModal={closeModal} />
           </Modal>}
+
+          {imageModalOpen && selectedImage && (
+            <ImageModal
+              isOpen={imageModalOpen}
+              onClose={closeImageModal}
+              imageUrl={selectedImage}
+            />
+          )}
+
         </div>
       </div>
-    </>
+    </div>
   )
 }

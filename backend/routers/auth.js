@@ -104,8 +104,11 @@ router.post(
           id : newUser._id
         }
       }
-      const createdNotebook = new Notebook(notebook);
-      await createdNotebook.save();
+      if(!newUser.isAdmin){
+        const createdNotebook = new Notebook(notebook);
+        await createdNotebook.save();
+      }
+      
 
       res.status(201).json({ message: "User registered successfully" });
     } catch (err) {

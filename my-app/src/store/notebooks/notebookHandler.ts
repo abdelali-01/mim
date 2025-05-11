@@ -4,6 +4,7 @@ import { setIsLoading, setNotebooks, setSelectedNotebook } from "./notebookSlice
 import { Notebook, NotebookItem } from "../../../public/types";
 import { setError } from "../error/errorSlice";
 import { setSuccessAlert } from "../alert/alertSlice";
+import { ParamValue } from "next/dist/server/request/params";
 
 const server = process.env.NEXT_PUBLIC_SERVER;
 
@@ -44,22 +45,48 @@ export const findNotebook = (notebooks: Notebook[], notebookId: string | string[
     }
 }
 
-export const updateNotebook = (item: NotebookItem , notebookId : string | string[] , closeModal : ()=> void) => async (dispatch: AppDispatch) => {
-    try {
-        const res = await axios.put(`${server}/api/notebooks/${notebookId}` , {item} , {withCredentials : true});
-        if(res.statusText === 'OK'){
-            dispatch(fetchNotebooks());
-            dispatch(setSuccessAlert('Your update has been successfully'));
-            closeModal();
+// export const updateNotebook = (item: NotebookItem , notebookId : string | string[] , closeModal : ()=> void) => async (dispatch: AppDispatch) => {
+
+//     try {
+//         const res = await axios.put(`${server}/api/notebooks/${notebookId}` , {item} , {withCredentials : true});
+//         if(res.statusText === 'OK'){
+//             dispatch(fetchNotebooks());
+//             dispatch(setSuccessAlert('Your update has been successfully'));
+//             closeModal();
             
-            setTimeout(()=>{
-                dispatch(setSuccessAlert(null));
-            }, 3000)
-        }
-    } catch (error) {
-        console.log('error during adding a notebookItem', error);
-        dispatch(setError({
-            message: error.response.data.message || error.message
-        }));
+//             setTimeout(()=>{
+//                 dispatch(setSuccessAlert(null));
+//             }, 3000)
+//         }
+//     } catch (error) {
+//         console.log('error during adding a notebookItem', error);
+//         dispatch(setError({
+//             message: error.response.data.message || error.message
+//         }));
+//     }
+// } 
+
+
+export const updateNotebook = (formData: FormData, notebookId: ParamValue, closeModal: () => void) => async (dispatch: AppDispatch) => {
+  try {
+    const res = await axios.put(`${server}/api/notebooks/${notebookId}`, formData, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if (res.statusText === 'OK') {
+      dispatch(fetchNotebooks());
+      dispatch(setSuccessAlert("Your update has been successfully"));
+      closeModal();
+      setTimeout(() => dispatch(setSuccessAlert(null)), 3000);
     }
-} 
+  } catch (error: any) {
+    console.error("Error updating notebook item", error);
+    dispatch(setError({
+      message: error.response?.data?.message || error.message,
+    }));
+  }
+};
+

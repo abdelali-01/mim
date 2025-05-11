@@ -24,6 +24,7 @@ const notebookSchema = new mongoose.Schema(
             product: { type: String, required: [true, "Product name is required."] },
             quantity: { type: Number, default: 1 },
             price: { type: Number, required: [true, "Product price is required."] },
+            image : {type : String}
           }
         ],
         date: { type: Date, default: Date.now },

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -15,19 +15,29 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { fetchNotebooks } from "@/store/notebooks/notebookHandler";
-import { getNotebookStatus } from "@/utils";
+import { filterItems, getNotebookStatus } from "@/utils";
+import { useSearch } from "@/context/SearchContext";
 
 
 export default function BasicTableOne() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const {notebooks , isLoading} = useSelector((state : RootState) => state.notebooks);
+  const [filtredNotebooks , setFiltredNotebooks] = useState(notebooks);
+  const {search} = useSearch()
 
   useEffect(()=>{
     if(!notebooks) {
       dispatch(fetchNotebooks())
     }
   },[notebooks , dispatch]);
+
+  useEffect(()=>{
+    if(notebooks){
+      const result = filterItems(notebooks , search);
+      setFiltredNotebooks(result);
+    }
+  },[search, notebooks]);
 
   if(isLoading) return (<div>Loading...</div>)
   return (
@@ -67,7 +77,7 @@ export default function BasicTableOne() {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {notebooks && notebooks.map((notebook) => {
+              {filtredNotebooks && filtredNotebooks.map((notebook) => {
               const {label , color} = getNotebookStatus(notebook.total , notebook.prePayment)
               return(
                 <TableRow key={notebook._id} 

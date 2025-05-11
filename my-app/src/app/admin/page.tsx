@@ -18,22 +18,22 @@ export const metadata: Metadata = {
 export default async function Dashboard() {
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
-      <div className="col-span-12 space-y-6 xl:col-span-7">
+      <div className="col-span-12 space-y-6 xl:col-span-12">
         <EcommerceMetrics />
 
         <MonthlySalesChart />
       </div>
-
+{/* 
       <div className="col-span-12 xl:col-span-5">
         <MonthlyTarget />
-      </div>
+      </div> */}
 
       <div className="col-span-12">
         <StatisticsChart />
       </div>
 
       <div className="col-span-12">
-        <RecentOrders />
+        {/* <RecentOrders /> */}
       </div>
     </div>
   );

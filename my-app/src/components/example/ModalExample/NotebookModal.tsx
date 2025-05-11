@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Button from "../../ui/button/Button";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
-import { NotebookItem} from "../../../../public/types";
+import { NotebookItem } from "../../../../public/types";
 import { formatDateToISO, getNotebookStatus } from "@/utils";
 import Badge from "@/components/ui/badge/Badge";
 import { PlusCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -11,6 +11,9 @@ import { useParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { updateNotebook } from "@/store/notebooks/notebookHandler";
+import Image from "next/image";
+import { useImageModal } from "@/hooks/useImage";
+import ImageModal from "../ImageModal";
 
 interface Props {
   notebookData?: NotebookItem;
@@ -20,7 +23,9 @@ interface Props {
 
 export default function NotebookModal({ notebookData, closeModal }: Props) {
   const [item, setItem] = useState<NotebookItem | null>(null);
-  const {notebookId} = useParams();
+  const [images, setImages] = useState<(File | null)[]>([]);
+
+  const { notebookId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
 
   const addProduct = () => {
@@ -39,12 +44,23 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
     setItem({ ...item, [field]: value });
   };
 
-  const handleProductChange = (index: number, field: string, value: string | number) => {
+  const handleProductChange = (
+    index: number,
+    field: string,
+    value: string | number | File
+  ) => {
     if (!item) return;
+
     const updatedProducts = [...item.products];
-    updatedProducts[index] = { ...updatedProducts[index], [field]: value };
+    updatedProducts[index] = {
+      ...updatedProducts[index],
+      [field]: value,
+    };
+
     setItem({ ...item, products: updatedProducts });
   };
+
+
 
   const handleRemoveProduct = (index: number) => {
     if (!item) return;
@@ -53,22 +69,21 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
   };
 
   useEffect(() => {
-    if (notebookData) setItem(notebookData)
-    else setItem({
-      products: [
-        {
-          product: '',
-          quantity: 1,
-          price: 0,
-        },
-      ],
-      total: 0,
-      prePayment: 0,
-      paid: false,
-    })
+    if (notebookData) {
+      setItem(notebookData);
+      setImages(notebookData.products.map(() => null)); // init with nulls
+    } else {
+      setItem({
+        products: [{ product: '', quantity: 1, price: 0, image: '' }],
+        total: 0,
+        prePayment: 0,
+        paid: false,
+      });
+      setImages([null]);
+    }
   }, [notebookData]);
 
-  
+
   // to update the total of the item based on the products
   useEffect(() => {
     if (!item) return;
@@ -85,12 +100,27 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
 
 
   const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
-    dispatch(updateNotebook(item , notebookId , ()=> closeModal()));
+    if (!item) return;
+
+    const formData = new FormData();
+
+    // Append image files
+    images.forEach((file, index) => {
+      if (file) {
+        formData.append(`image_${index}`, file);
+      }
+    });
+
+    // Append the item JSON as a string
+    formData.append("item", JSON.stringify(item));
+
+    dispatch(updateNotebook(formData, notebookId, () => closeModal()));
   };
 
+
   const { label, color } = getNotebookStatus(item?.total, item?.prePayment);
+
+  const { closeImageModal, openImageModal, imageModalOpen, selectedImage } = useImageModal()
 
   if (!item) return null;
   return (
@@ -142,7 +172,7 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
             The is no product added
           </h4>
         </div> :
-          item.products.map(({ product, price, quantity }, i) => (
+          item.products.map(({ product, price, quantity, image }, i) => (
             <div key={i}>
               <h4 className="ms-3 font-medium text-gray-800 dark:text-white/90 mt-6 mb-3 flex items-center justify-between">
                 <span>Product {i + 1}</span>
@@ -151,11 +181,38 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
                 />
               </h4>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-3">
-                <div className="col-span-3">
+                <div className="col-span-1">
                   <Label>Product</Label>
                   <Input type="text" value={product} placeholder="The product name"
                     onChange={(e) => handleProductChange(i, 'product', e.target.value)}
                   />
+                </div>
+
+                <div className="col-span-2">
+                  <Label>Image</Label>
+                  <div className="flex items-center gap-2">
+                    {image && <Image
+                      src={image}
+                      alt='img'
+                      width={60}
+                      height={50}
+                      className="rounded-lg object-cover cursor-pointer"
+                      onClick={()=> openImageModal(image)}
+                    />}
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const updatedImages = [...images];
+                          updatedImages[i] = file;
+                          setImages(updatedImages);
+                        }
+                      }}
+                    />
+                  </div>
+
                 </div>
 
                 <div className="col-span-1">
@@ -184,7 +241,7 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
         }
 
         <div className="my-4 flex justify-end" onClick={addProduct}>
-          <PlusCircleIcon className="size-10 cursor-pointer text-brand-500"/>
+          <PlusCircleIcon className="size-10 cursor-pointer text-brand-500" />
         </div>
       </div>
 
@@ -196,6 +253,8 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
           Save Changes
         </Button>
       </div>
+
+      {selectedImage && imageModalOpen && <ImageModal onClose={closeImageModal} isOpen={imageModalOpen} imageUrl={selectedImage} />}
     </form>
 
   );

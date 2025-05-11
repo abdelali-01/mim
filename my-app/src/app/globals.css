@@ -762,3 +762,64 @@ span.flatpickr-weekday,
   opacity: 0.8;
   cursor: grabbing; /* Changes the cursor to indicate dragging */
 }
+
+
+@media print {
+    .print-container {
+    width: 21cm;
+    margin: 0 auto;
+  }
+  
+  /* Style the print view for the table */
+    .print-table {
+    max-width: 21cm; /* Fixed table width of 21cm */
+    margin: 0 auto; /* Center the table on the page */
+    border-collapse: collapse; /* Collapse table borders */
+    font-family: Arial, sans-serif; /* Font for printing */
+  }
+
+  .print-table th,
+  .print-table td {
+    padding: 12px 4px; /* Add more padding for better readability */
+    border: 1px solid #ddd; /* Border for table cells */
+    text-align: left; /* Left-align the text */
+  }
+
+  .print-table th {
+    background-color: #f4f4f4; /* Light background for headers */
+    font-weight: bold; /* Bold text for headers */
+  }
+
+  /* Customize the status badge for print */
+  .print-table .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 12px;
+    background-color: #e0e0e0; /* Change background for print */
+    color: #333; /* Text color */
+  }
+
+  /* Center the document header before the table */
+  .print-header {
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  /* Remove unnecessary elements like buttons for print */
+  .no-print {
+    display: none; /* Hide buttons/icons like the print button */
+  }
+
+  /* Page margin adjustments */
+  body {
+    margin: 20px;
+    overflow-x: hidden;
+  }
+
+    @page {
+    size: A4;
+    margin: 1cm;
+  }
+}

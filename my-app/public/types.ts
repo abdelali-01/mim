@@ -2,6 +2,7 @@ export interface ProductItem  {
   product: string;
   quantity: number;
   price: number;
+  image? : string | File;
 }
 
 
