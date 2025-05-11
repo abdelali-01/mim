@@ -2,16 +2,17 @@
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../ui/table'
 import Badge from '../ui/badge/Badge'
 import { Notebook } from '../../../public/types'
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BarsArrowDownIcon, BarsArrowUpIcon, PencilSquareIcon, PrinterIcon } from '@heroicons/react/24/outline'
 import { useModal } from '@/hooks/useModal';
 import { Modal } from '../ui/modal';
 import NotebookModal from '../example/ModalExample/NotebookModal';
-import { formatDateToISO, getNotebookStatus } from '@/utils';
+import { filterItems, formatDateToISO, getNotebookStatus } from '@/utils';
 import Image from 'next/image';
 import { useImageModal } from '@/hooks/useImage';
 import ImageModal from '../example/ImageModal';
 import { useReactToPrint } from 'react-to-print';
+import { useSearch } from '@/context/SearchContext';
 
 interface Props {
   notebook: Notebook;
@@ -40,6 +41,17 @@ export default function NotebookTable({ notebook }: Props) {
     contentRef: printRef,
     documentTitle: `Notebook-${notebook.client.username}`,
   });
+
+
+  // search logic
+  const [filredTable , setFiltredTable] = useState(notebook.table);
+  const {search} = useSearch();
+  useEffect(()=>{
+    if(notebook.table){
+      const result = filterItems(notebook.table , search);
+      setFiltredTable(result);
+    }
+  },[search , notebook])
 
 
   return (
@@ -190,7 +202,7 @@ export default function NotebookTable({ notebook }: Props) {
 
               {/* Table Body */}
               <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                {notebook.table.map((item) => {
+                {filredTable.map((item) => {
                   const { label, color } = getNotebookStatus(item?.total, item?.prePayment);
                   return (
                     <React.Fragment key={item._id}>

@@ -1,26 +1,39 @@
 'use client';
 import { AppDispatch, RootState } from '@/store/store';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../ui/table'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchAccounts } from '@/store/accounts/accountHandler';
 import { useDispatch, useSelector } from 'react-redux';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useModal } from '@/hooks/useModal';
 import { Modal } from '../ui/modal';
 import AccountModal from '../example/ModalExample/AccountModal';
+import { useSearch } from '@/context/SearchContext';
+import { filterItems } from '@/utils';
 
 export default function AccountsTable() {
     const dispatch = useDispatch<AppDispatch>();
     const { accounts } = useSelector((state: RootState) => state.accounts);
 
-    const {isOpen , openModal , closeModal , selectedItem} = useModal();
+    const { isOpen, openModal, closeModal, selectedItem } = useModal();
 
 
     useEffect(() => {
         dispatch(fetchAccounts())
     }, [dispatch]);
 
-    if (!accounts) return <div>Loading ...</div>
+
+    // search handle
+    const { search } = useSearch();
+    const [filtredAccounts, setFiltredAccounts] = useState(accounts);
+    useEffect(() => {
+        if (accounts) {
+            const result = filterItems(accounts, search);
+            setFiltredAccounts(result)
+        }
+    }, [search, accounts])
+
+    if (!filtredAccounts) return <div>Loading ...</div>
     return (
         <div className="max-w-full overflow-x-auto">
             <div className="min-w-[1000px]">
@@ -62,7 +75,7 @@ export default function AccountsTable() {
                         </TableHeader>
 
                         <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                            {accounts.map(account => (
+                            {filtredAccounts.map(account => (
                                 <TableRow key={account._id}
                                 >
                                     <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
@@ -80,7 +93,7 @@ export default function AccountsTable() {
                                     </TableCell>
 
                                     <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
-                                        <PencilSquareIcon className='size-7 cursor-pointer text-brand-500' onClick={()=> openModal(account)}/>
+                                        <PencilSquareIcon className='size-7 cursor-pointer text-brand-500' onClick={() => openModal(account)} />
                                         <TrashIcon className="size-7 cursor-pointer text-brand-500" />
                                     </TableCell>
                                 </TableRow>
@@ -90,11 +103,11 @@ export default function AccountsTable() {
                 </div>
 
                 {isOpen && selectedItem && <Modal
-                isOpen={isOpen}
-                onClose={closeModal}
-                className="max-w-[584px] p-5 lg:p-10"
+                    isOpen={isOpen}
+                    onClose={closeModal}
+                    className="max-w-[584px] p-5 lg:p-10"
                 >
-                    <AccountModal account={selectedItem} closeModal={closeModal}/>
+                    <AccountModal account={selectedItem} closeModal={closeModal} />
                 </Modal>}
             </div>
         </div>
