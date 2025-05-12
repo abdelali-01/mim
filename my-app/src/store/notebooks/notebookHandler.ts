@@ -30,8 +30,6 @@ export const findNotebook = (notebooks: Notebook[], notebookId: string | string[
     dispatch(setIsLoading(true));
     try {
         const finded = notebooks.find(n => n._id == notebookId);
-        console.log('finded one one handler', finded);
-
         if (finded) {
             dispatch(setSelectedNotebook(finded));
         }
@@ -44,28 +42,6 @@ export const findNotebook = (notebooks: Notebook[], notebookId: string | string[
         dispatch(setIsLoading(false));
     }
 }
-
-// export const updateNotebook = (item: NotebookItem , notebookId : string | string[] , closeModal : ()=> void) => async (dispatch: AppDispatch) => {
-
-//     try {
-//         const res = await axios.put(`${server}/api/notebooks/${notebookId}` , {item} , {withCredentials : true});
-//         if(res.statusText === 'OK'){
-//             dispatch(fetchNotebooks());
-//             dispatch(setSuccessAlert('Your update has been successfully'));
-//             closeModal();
-            
-//             setTimeout(()=>{
-//                 dispatch(setSuccessAlert(null));
-//             }, 3000)
-//         }
-//     } catch (error) {
-//         console.log('error during adding a notebookItem', error);
-//         dispatch(setError({
-//             message: error.response.data.message || error.message
-//         }));
-//     }
-// } 
-
 
 export const updateNotebook = (formData: FormData, notebookId: ParamValue, closeModal: () => void) => async (dispatch: AppDispatch) => {
   try {

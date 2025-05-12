@@ -72,6 +72,7 @@ export default function AccountModal({ account, closeModal }: Props) {
                             setUserInfo(prev => ({ ...prev, role: value }))
                           }}
                         required={true}
+                        disabled={user?.role !== 'super'}
                     />
                 </div>
             </div>

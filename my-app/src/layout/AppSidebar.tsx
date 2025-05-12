@@ -41,7 +41,9 @@ const navItems: NavItem[] = [
   {
     name: "Manage",
     icon: <TaskIcon />,
-    subItems: [{ name: "Products", path: "/admin/products" }, { name: "Services", path: "/admin/services" } ,{ name: "Notebooks ( credit )", path: "/admin/notebooks" }],
+    subItems: [{ name: "Cash register", path: "/admin/cash-register" },
+      //  { name: "Services", path: "/admin/services" } ,
+       { name: "Notebooks ( credit )", path: "/admin/notebooks" }],
   },
   {
     icon: <CalenderIcon />,

@@ -21,11 +21,10 @@ export default function AdminLayout({
 
   useEffect(() => {
     const check = setTimeout(() => {
-      if (!user) {
+      if (!user || !user.isAdmin) {
         router.push('/signin')
       }
-    }, 2000);
-
+    }, 5000);
     return () => clearTimeout(check);
   }, [user, router])
 
@@ -36,7 +35,7 @@ export default function AdminLayout({
       ? "lg:ml-[290px]"
       : "lg:ml-[90px]";
 
-  if (!user) return null;
+  if (!user || !user.isAdmin) return null;
   return (
     <div className="min-h-screen xl:flex">
       {/* Sidebar and Backdrop */}

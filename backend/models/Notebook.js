@@ -84,5 +84,5 @@ notebookSchema.pre("findOneAndUpdate", async function (next) {
   next();
 });
 
-const Notebook = mongoose.model("Notebook", notebookSchema);
+const Notebook = mongoose.models.Notebook || mongoose.model("Notebook", notebookSchema);
 export default Notebook;

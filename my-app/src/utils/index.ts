@@ -1,4 +1,8 @@
-export function formatDateToISO(date: string): string {
+export function formatDateToISO(date: string | Date): string {
+  if(date instanceof Date){
+    return date.toISOString().split('T')[0]
+  }
+
   return date.split('T')[0];
 }
 

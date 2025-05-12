@@ -4,6 +4,7 @@ import errorReducer from './error/errorSlice'
 import alertReducer from './alert/alertSlice';
 import notebookReducer from './notebooks/notebookSlice';
 import accountReducer from './accounts/accountsSlice';
+import cashRegisterReducer from './cash-register/cashRegisterSlice';
 
 export const store = configureStore({
     reducer : {
@@ -11,7 +12,8 @@ export const store = configureStore({
         error : errorReducer ,
         alert : alertReducer ,
         notebooks : notebookReducer ,
-        accounts : accountReducer
+        accounts : accountReducer,
+        cashRegister : cashRegisterReducer 
     }
 });
 
