@@ -11,9 +11,23 @@ router.get("/", rolePermissions(["super", "sub-super"]), async (req, res) => {
       res.status(404).json({ message: "Cash register pages not found  !" });
     }
 
+    const registers = await CashRegister.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m", date: "$date" } },
+          cashRegisterItems: { $push: "$$ROOT" },
+          t_total: { $sum: "$t_total" },
+          f_total: { $sum: "$f_total" },
+          total: { $sum: "$total" },
+        },
+      },
+      { $sort: { _id: -1 } },
+    ]);
+
     res.status(200).json({
       message: "success",
       pages: result,
+      registers,
     });
   } catch (error) {
     console.log("error getting items", error);
@@ -84,14 +98,12 @@ router.put(
         }
       }
 
-      console.log(updateRemoved);
-
       // Update removed
       if (updateRemoved && updateRemoved._id) {
         const removedToUpdate = page.removed.id(updateRemoved._id);
         if (removedToUpdate) {
           const { _id, ...rest } = updateRemoved;
-          Object.assign( removedToUpdate, rest);
+          Object.assign(removedToUpdate, rest);
         } else {
           console.warn("Item not found for update:", updateItem._id);
         }
@@ -100,9 +112,23 @@ router.put(
       const updated = await page.save(); // recalculates totals automatically
       res.status(200).json(updated);
     } catch (err) {
-      res.status(400).json({ error: err.message });
+      res.status(400).json({ message: err.message });
     }
   }
 );
+
+// delete cash register page 
+router.delete('/:id' , rolePermissions(['super' , 'sub-super']) ,async (req ,res) => {
+    try {
+        const deletedPage = await CashRegister.findByIdAndDelete(req.params.id);
+        if(!deletedPage){
+            return res.status(404).send({message : 'The page you select doesn`t exist !'})
+        }
+
+        res.sendStatus(200);
+    } catch (error) {
+      res.status(400).json({ message: err.message });
+    }
+});
 
 export default router;

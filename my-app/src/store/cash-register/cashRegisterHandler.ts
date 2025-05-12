@@ -1,7 +1,7 @@
 import axios from "axios";
 import { setError } from "../error/errorSlice";
 import { AppDispatch } from "../store";
-import { CashRegisterPage, CashRegisterPageItem, RemovedItem, setCashRegisterPages, setSelectedPage } from "./cashRegisterSlice";
+import { CashRegisterPage, CashRegisterPageItem, RemovedItem, setCashRegisterPages, setRegisters, setSelectedPage } from "./cashRegisterSlice";
 import { setSuccessAlert } from "../alert/alertSlice";
 import { ParamValue } from "next/dist/server/request/params";
 
@@ -40,6 +40,7 @@ export const fetchCashRegisterPages = () => async (dispatch: AppDispatch) => {
                 const sorted = [...pages].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 dispatch(setCashRegisterPages(sorted));
             }
+            dispatch(setRegisters(res.data.registers));
         }
     } catch (error) {
         console.log('Error during getting the cash register pages', error);
@@ -91,8 +92,32 @@ export const updateCashRegisterPage = (payload: UpdatePayload) => async (dispatc
         console.error('Error updating page:', error);
         dispatch(
             setError({
-                message: error.response?.data?.error || error.message,
+                message: error.response?.data?.message || error.message,
             })
         );
     }
 };
+
+
+export const deleteCashRegisterPage = (pageId: ParamValue | string) => async (dispatch: AppDispatch) => {
+    try {
+        const res = await axios.delete(`${server}/api/cash-register/${pageId}`, { withCredentials: true });
+        console.log(res);
+        
+        if (res) {
+            dispatch(setSuccessAlert('You page has been deleted successfully'));
+            dispatch(fetchCashRegisterPages());
+
+            setTimeout(() => {
+                dispatch(setSuccessAlert(null));
+            }, 3000);
+        }
+    } catch (error) {
+        console.error('Error deleting page:', error);
+        dispatch(
+            setError({
+                message: error.response?.data?.message || error.message,
+            })
+        );
+    }
+}

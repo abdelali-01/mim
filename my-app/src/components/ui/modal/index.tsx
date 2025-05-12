@@ -1,5 +1,4 @@
 "use client";
-import { AppDispatch } from "@/store/store";
 import React, { useRef, useEffect } from "react";
 
 interface ModalProps {

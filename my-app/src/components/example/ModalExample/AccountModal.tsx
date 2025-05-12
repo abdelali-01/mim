@@ -20,7 +20,7 @@ export default function AccountModal({ account, closeModal }: Props) {
 
     const [userInfo, setUserInfo] = useState<User>(account);
 
-    const changeHandler = (e)=>{
+    const changeHandler = (e : React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)=>{
         setUserInfo((prev)=> ({...prev , [e.target.name] : e.target.value}));
     }
 

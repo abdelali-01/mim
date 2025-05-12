@@ -2,12 +2,8 @@
 import ComponentCard from '@/components/common/ComponentCard';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import CashRegisterPageTable from '@/components/tables/CashRegisterPageTable';
-import Button from '@/components/ui/button/Button';
-import { Modal } from '@/components/ui/modal';
-import { useModal } from '@/hooks/useModal';
 import { fetchCashRegisterPages, findCashRegisterPage } from '@/store/cash-register/cashRegisterHandler';
 import { AppDispatch, RootState } from '@/store/store'
-import { PlusIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'

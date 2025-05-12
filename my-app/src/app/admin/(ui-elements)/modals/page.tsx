@@ -3,7 +3,6 @@ import DefaultModal from "@/components/example/ModalExample/DefaultModal";
 import FormInModal from "@/components/example/ModalExample/FormInModal";
 import FullScreenModal from "@/components/example/ModalExample/FullScreenModal";
 import ModalBasedAlerts from "@/components/example/ModalExample/ModalBasedAlerts";
-import NotebookModal from "@/components/example/ModalExample/NotebookModal";
 import VerticallyCenteredModal from "@/components/example/ModalExample/VerticallyCenteredModal";
 import { Metadata } from "next";
 import React from "react";

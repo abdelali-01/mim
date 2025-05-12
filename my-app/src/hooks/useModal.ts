@@ -5,7 +5,7 @@ export const useModal = (initialState: boolean = false, initilizeError?: () => v
   const [isOpen, setIsOpen] = useState(initialState);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const openModal = useCallback((item) => {
+  const openModal = useCallback((item? : any) => {
     if (item) setSelectedItem(item);
     setIsOpen(true);
   }, []);

@@ -10,7 +10,7 @@ export interface CashRegisterPageItem {
     _id?: string;
     title: string;
     category: 'F' | 'T';
-    price: number |null ;
+    price: number | null;
 }
 
 export interface CashRegisterPage {
@@ -24,27 +24,32 @@ export interface CashRegisterPage {
 }
 
 interface StateType {
-    cashRegisterPages : CashRegisterPage[] | null ;
-    selectedPage : CashRegisterPage | null ;
+    registers: any;
+    cashRegisterPages: CashRegisterPage[] | null;
+    selectedPage: CashRegisterPage | null;
 }
 
-const initialState : StateType = {
-    cashRegisterPages : null ,
-    selectedPage : null 
+const initialState: StateType = {
+    registers: null,
+    cashRegisterPages: null,
+    selectedPage: null
 }
 
 const cashRegisterSlice = createSlice({
-    name : 'cash-register' ,
-    initialState ,
-    reducers : {
-        setCashRegisterPages : (state , action ) => {
-            state.cashRegisterPages = action.payload ;
+    name: 'cash-register',
+    initialState,
+    reducers: {
+        setCashRegisterPages: (state, action) => {
+            state.cashRegisterPages = action.payload;
         },
-        setSelectedPage : (state , action)=>{
-            state.selectedPage = action.payload ;
+        setRegisters: (state, action) => {
+            state.registers = action.payload
+        },
+        setSelectedPage: (state, action) => {
+            state.selectedPage = action.payload;
         }
     }
 });
 
-export const {setCashRegisterPages , setSelectedPage} = cashRegisterSlice.actions ;
-export default cashRegisterSlice.reducer ;
+export const { setCashRegisterPages, setSelectedPage, setRegisters } = cashRegisterSlice.actions;
+export default cashRegisterSlice.reducer;

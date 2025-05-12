@@ -5,7 +5,6 @@ export default function DeleteModal({
   isOpen,
   onClose,
   onClick,
-  itemId,
 }: {
   isOpen: boolean;
   onClose: () => void;

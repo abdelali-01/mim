@@ -11,9 +11,9 @@ export interface NotebookItem {
   products : ProductItem[];
   total : number ;
   prePayment : number ;
-  date?: Date;
+  date?: Date | string;
   paid: boolean;
-  paidDate?: Date;
+  paidDate?: Date | string;
 }
 
 export interface Notebook {
@@ -26,7 +26,7 @@ export interface Notebook {
   table: NotebookItem[];
   total: number;
   prePayment: number;
-  createdAt: string; // from timestamps
-  updatedAt: string; // from timestamps
+  createdAt: string | Date; // from timestamps
+  updatedAt: string | Date; // from timestamps
 }
 

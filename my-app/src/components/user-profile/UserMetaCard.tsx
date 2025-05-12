@@ -2,10 +2,6 @@
 import React from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
-import Button from "../ui/button/Button";
-import Input from "../form/input/InputField";
-import Label from "../form/Label";
-import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import AccountModal from "../example/ModalExample/AccountModal";
@@ -16,11 +12,11 @@ export default function UserMetaCard() {
   const { user } = useSelector((state: RootState) => state.auth);
 
 
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
-    closeModal();
-  };
+  // const handleSave = () => {
+  //   // Handle save logic here
+  //   console.log("Saving changes...");
+  //   closeModal();
+  // };
 
 
   if (!user) return null;
