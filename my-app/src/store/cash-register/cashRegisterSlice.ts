@@ -3,14 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface RemovedItem {
     _id?: string
     note: string;
-    some: number;
+    some: number | null;
 }
 
 export interface CashRegisterPageItem {
     _id?: string;
     title: string;
-    catgory: 'F' | 'T';
-    price: number;
+    category: 'F' | 'T';
+    price: number |null ;
 }
 
 export interface CashRegisterPage {
@@ -18,8 +18,8 @@ export interface CashRegisterPage {
     date: Date | string;
     removed: RemovedItem[];
     total: number;
-    t_Total: number;
-    f_Total: number;
+    t_total: number;
+    f_total: number;
     items: CashRegisterPageItem[];
 }
 

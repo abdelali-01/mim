@@ -17,8 +17,6 @@ export default function Page() {
     const dispatch = useDispatch<AppDispatch>();
     const {pageId} = useParams();
 
-    const {isOpen , openModal , closeModal} = useModal();
-
     useEffect(()=>{
         if(cashRegisterPages){
             dispatch(findCashRegisterPage(cashRegisterPages , pageId));
