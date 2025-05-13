@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import Button from "../ui/button/Button";
 
 interface CtaComponentCard {
@@ -11,7 +11,8 @@ interface ComponentCardProps {
   children: React.ReactNode;
   className?: string; // Additional custom classes for styling
   desc?: string; // Description text
-  cta?: CtaComponentCard
+  cta?: CtaComponentCard;
+  info? : ReactNode | string;
 }
 
 const ComponentCard: React.FC<ComponentCardProps> = ({
@@ -20,6 +21,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
   cta,
   className = "",
   desc = "",
+  info
 }) => {
   return (
     <div
@@ -32,6 +34,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
           {cta && <Button size="sm" onClick={cta.onClick}>
             {cta?.content}
           </Button>}
+          {info}
         </h3>
         {desc && (
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">

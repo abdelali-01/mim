@@ -3,7 +3,7 @@ import { useState, useCallback } from "react";
 
 export const useModal = (initialState: boolean = false, initilizeError?: () => void) => {
   const [isOpen, setIsOpen] = useState(initialState);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
   const openModal = useCallback((item? : any) => {
     if (item) setSelectedItem(item);

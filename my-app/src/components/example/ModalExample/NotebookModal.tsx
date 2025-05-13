@@ -118,7 +118,7 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
   };
 
 
-  const { label, color } = getNotebookStatus(item?.total, item?.prePayment);
+  const { label, color } = getNotebookStatus(item?.total || 0, item?.prePayment || 0);
 
   const { closeImageModal, openImageModal, imageModalOpen, selectedImage } = useImageModal()
 
@@ -197,7 +197,7 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
                       width={60}
                       height={50}
                       className="rounded-lg object-cover cursor-pointer"
-                      onClick={()=> openImageModal(image)}
+                      onClick={() => openImageModal(image)}
                     />}
                     <Input
                       type="file"

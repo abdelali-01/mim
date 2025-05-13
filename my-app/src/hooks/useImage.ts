@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 export function useImageModal() {
   const [imageModalOpen, setImageModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | File | null>(null);
 
-  const openImageModal = (image: string) => {
+  const openImageModal = (image: string | File) => {
     setSelectedImage(image);
     setImageModalOpen(true);
   };

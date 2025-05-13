@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../ui/table'
 import { CashRegisterPage, CashRegisterPageItem, RemovedItem } from '@/store/cash-register/cashRegisterSlice'
 import { formatDateToISO } from '@/utils'
@@ -14,6 +14,7 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store/store'
 import { updateCashRegisterPage } from '@/store/cash-register/cashRegisterHandler'
 import { useDeleteModal } from '@/context/DeleteModalContext'
+import { useReactToPrint } from 'react-to-print'
 
 interface Props {
     page: CashRegisterPage
@@ -21,93 +22,91 @@ interface Props {
 
 export default function CashRegisterPageTable({ page }: Props) {
 
+    const printRef = useRef(null);
+    const handlePrint = useReactToPrint({
+        contentRef: printRef,
+        documentTitle: `caisse-${formatDateToISO(page.date)}`
+    })
+
     return (
-        <div>
-            <div className="max-w-full overflow-x-auto print:overflow-visible mb-5">
-                <div className="min-w-[1000px] print:min-w-0 print:w-full">
-                    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-                        <Table className='print-table'>
-                            <TableHeader className="print-header border-b border-gray-100 dark:border-white/[0.05]">
-                                <TableRow>
-                                    <TableCell
-                                        isHeader
-                                        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                                    >
-                                        Page date
-                                    </TableCell>
-                                    <TableCell
-                                        isHeader
-                                        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                                    >
-                                        Trodat total
-                                    </TableCell>
-                                    <TableCell
-                                        isHeader
-                                        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                                    >
-                                        Fourniture total
-                                    </TableCell>
-                                    <TableCell
-                                        isHeader
-                                        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                                    >
-                                        Total
-                                    </TableCell>
-                                    <TableCell
-                                        isHeader
-                                        className="no-print px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                                    >
-                                        Print
-                                    </TableCell>
-                                </TableRow>
-                            </TableHeader>
+        <div ref={printRef}>
+            <div className='grid grid-cols-12 gap-4 '>
+                <div className="col-span-12 lg:col-span-9 overflow-x-auto print:overflow-visible mb-5">
+                    <div className="min-w-[700px] print:min-w-0 print:w-full">
+                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+                            <Table className='print-table'>
+                                <TableHeader className="print-header border-b border-gray-100 dark:border-white/[0.05]">
+                                    <TableRow>
+                                        <TableCell
+                                            isHeader
+                                            className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                                        >
+                                            Page date
+                                        </TableCell>
+                                        <TableCell
+                                            isHeader
+                                            className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                                        >
+                                            Trodat total
+                                        </TableCell>
+                                        <TableCell
+                                            isHeader
+                                            className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                                        >
+                                            Fourniture total
+                                        </TableCell>
+                                        <TableCell
+                                            isHeader
+                                            className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                                        >
+                                            Total
+                                        </TableCell>
+                                        <TableCell
+                                            isHeader
+                                            className="no-print px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                                        >
+                                            Print
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHeader>
 
-                            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                                <TableRow
-                                >
-                                    <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
-                                        {formatDateToISO(page.date)}
-                                    </TableCell>
-                                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                        {page.t_total || 0} DA
-                                    </TableCell>
-                                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                        {page.f_total || 0} DA
-                                    </TableCell>
+                                <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+                                    <TableRow
+                                    >
+                                        <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
+                                            {formatDateToISO(page.date)}
+                                        </TableCell>
+                                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                            {page.t_total || 0} DA
+                                        </TableCell>
+                                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                            {page.f_total || 0} DA
+                                        </TableCell>
 
-                                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                        {page.total} DA
-                                    </TableCell>
-                                    <TableCell className="no-print px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
-                                        <PrinterIcon className='size-7 cursor-pointer text-brand-500'
-                                        //   onClick={handlePrint}
-                                        />
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
+                                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                            {page.total} DA
+                                        </TableCell>
+                                        <TableCell className="no-print px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
+                                            <PrinterIcon className='size-7 cursor-pointer text-brand-500'
+                                                onClick={handlePrint}
+                                            />
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-span-12 lg:col-span-3 overflow-x-auto print:overflow-visible">
+                    <div className="min-w-[200px] print:min-w-0 print:w-full">
+                        <RemouvedItemTable items={page.removed} />
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-full overflow-x-auto print:overflow-visible">
-                <div className="min-w-[1000px] print:min-w-0 print:w-full">
-                    <div className="grid grid-cols-12 gap-4 ">
-                        <div className='col-span-4  '>
-                            <RemouvedItemTable items={page.removed} />
-                        </div>
-                        <div className='col-span-8'>
-                            <CashItems items={page.items} />
-                        </div>
-                    </div>
-
-                    {/* {isOpen && selectedItem && <Modal
-            isOpen={isOpen}
-            onClose={closeModal}
-            className="max-w-[584px] p-5 lg:p-10"
-          >
-            <NotebookModal notebookData={selectedItem} closeModal={closeModal} />
-          </Modal>} */}
+            <div className="w-full overflow-x-auto print:overflow-visible">
+                <div className="min-w-[200px] print:min-w-0 print:w-full">
+                    <CashItems items={page.items} />
                 </div>
             </div>
         </div>
@@ -117,14 +116,14 @@ export default function CashRegisterPageTable({ page }: Props) {
 
 function RemouvedItemTable({ items }: { items: RemovedItem[] }) {
     const { isOpen, openModal, closeModal, selectedItem } = useModal();
-    const {openModal : openDeleteModal} = useDeleteModal()
+    const { openModal: openDeleteModal } = useDeleteModal()
     const { pageId } = useParams();
     const dispatch = useDispatch<AppDispatch>();
 
     const [formData, setFormData] = useState<RemovedItem>({
         _id: '',
         note: '',
-        some: null,
+        some: undefined,
     });
 
     useEffect(() => {
@@ -137,7 +136,7 @@ function RemouvedItemTable({ items }: { items: RemovedItem[] }) {
         } else {
             setFormData({
                 note: '',
-                some: null,
+                some: undefined,
             });
         }
     }, [selectedItem, isOpen]);
@@ -146,7 +145,7 @@ function RemouvedItemTable({ items }: { items: RemovedItem[] }) {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
-    const handleSave = (e) => {
+    const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (selectedItem) {
@@ -166,36 +165,32 @@ function RemouvedItemTable({ items }: { items: RemovedItem[] }) {
 
     return (
         <>
-            <div className='flex justify-end mb-3'>
-                <Button size="sm" variant="outline" startIcon={<PlusIcon className="size-4" />} onClick={() => openModal()}>
-                    Add Removed
-                </Button>
-            </div>
 
-            <Table className='print-table overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]'>
-                <TableHeader className="print-header border-b border-gray-100 dark:border-white/[0.05]">
-                    <TableRow>
-                        <TableCell className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Note</TableCell>
-                        <TableCell className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Some</TableCell>
-                        <TableCell className="no-print px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Actions</TableCell>
-                    </TableRow>
-                </TableHeader>
-
-                <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                    {items.map((item) => (
-                        <TableRow key={item._id}>
-                            <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">{item.note}</TableCell>
-                            <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">{item.some} DA</TableCell>
-                            <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 flex gap-2 items-center">
-                                <PencilSquareIcon className='text-brand-500 cursor-pointer size-7' onClick={() => openModal(item)} />
-                                <TrashIcon className='text-brand-500 cursor-pointer size-7' onClick={() => openDeleteModal(item._id , (id)=>{
-                                    dispatch(updateCashRegisterPage({pageId , deleteRemovedId : id}))
-                                })} />
-                            </TableCell>
+            {items.length < 1 ? <></> :
+                <Table className='print-table overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]'>
+                    <TableHeader className="print-header border-b border-gray-100 dark:border-white/[0.05]">
+                        <TableRow>
+                            <TableCell className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Note</TableCell>
+                            <TableCell className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Some</TableCell>
+                            <TableCell className="no-print px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Actions</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableHeader>
+
+                    <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+                        {items.map((item) => (
+                            <TableRow key={item._id}>
+                                <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">{item.note}</TableCell>
+                                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">{item.some} DA</TableCell>
+                                <TableCell className="no-print px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 flex gap-2 items-center">
+                                    <PencilSquareIcon className='text-brand-500 cursor-pointer size-7' onClick={() => openModal(item)} />
+                                    <TrashIcon className='text-brand-500 cursor-pointer size-7' onClick={() => openDeleteModal(item._id, (id) => {
+                                        dispatch(updateCashRegisterPage({ pageId, deleteRemovedId: id }))
+                                    })} />
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>}
 
             {isOpen &&
                 <Modal onClose={closeModal} isOpen={isOpen} className='max-w-[584px] p-5 lg:p-10'>
@@ -235,6 +230,11 @@ function RemouvedItemTable({ items }: { items: RemovedItem[] }) {
                     </form>
                 </Modal>
             }
+            <div className='flex justify-end my-3 no-print'>
+                <Button size="sm" variant="outline" startIcon={<PlusIcon className="size-4" />} onClick={() => openModal()}>
+                    Add Note
+                </Button>
+            </div>
         </>
     );
 }
@@ -242,7 +242,7 @@ function RemouvedItemTable({ items }: { items: RemovedItem[] }) {
 
 function CashItems({ items }: { items: CashRegisterPageItem[] }) {
     const { isOpen, openModal, closeModal, selectedItem } = useModal();
-    const {openModal : openDeleteModal} = useDeleteModal();
+    const { openModal: openDeleteModal } = useDeleteModal();
     const { pageId } = useParams();
     const dispatch = useDispatch<AppDispatch>();
 
@@ -250,7 +250,7 @@ function CashItems({ items }: { items: CashRegisterPageItem[] }) {
         _id: '',
         title: '',
         category: '',
-        price: null,
+        price: undefined,
     });
 
     useEffect(() => {
@@ -265,7 +265,7 @@ function CashItems({ items }: { items: CashRegisterPageItem[] }) {
             setFormData({
                 title: '',
                 category: '',
-                price: null,
+                price: undefined,
             });
         }
     }, [selectedItem, isOpen]);
@@ -274,7 +274,17 @@ function CashItems({ items }: { items: CashRegisterPageItem[] }) {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
-    const handleSave = (e) => {
+    const [tCat, setTCat] = useState<CashRegisterPageItem[] | null>(null);
+    const [fCat, setFCat] = useState<CashRegisterPageItem[] | null>(null);
+    useEffect(() => {
+        const tCategory = items.filter(item => item.category === 'T');
+        const fCategory = items.filter(item => item.category === 'F');
+
+        setFCat(fCategory);
+        setTCat(tCategory);
+    }, [items])
+
+    const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (selectedItem) {
             dispatch(updateCashRegisterPage({
@@ -291,69 +301,118 @@ function CashItems({ items }: { items: CashRegisterPageItem[] }) {
         closeModal();
     };
 
+    if (!fCat || !tCat) return null;
     return (
         <>
-            <div className='flex justify-end mb-3'>
+            <div className='flex justify-end my-3 no-print'>
                 <Button size="sm" startIcon={<PlusIcon className="size-4" />} onClick={() => openModal()}>Add Item</Button>
             </div>
-            <Table className='print-table overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]'>
 
-                <TableHeader className="print-header border-b border-gray-100 dark:border-white/[0.05]">
-                    <TableRow>
-                        <TableCell
-                            isHeader
-                            className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                        >
-                            Title
-                        </TableCell>
-                        <TableCell
-                            isHeader
-                            className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                        >
-                            Category
-                        </TableCell>
-                        <TableCell
-                            isHeader
-                            className="no-print px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                        >
-                            Price
-                        </TableCell>
-                        <TableCell
-                            isHeader
-                            className="no-print px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                        >
-                            Actions
-                        </TableCell>
-                    </TableRow>
-                </TableHeader>
-
-
-                <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                    {items.map((item) => {
-                        return (
-                            <TableRow key={item._id}
-                            >
-                                <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
-                                    {item.title}
+            <div className='grid grid-cols-12 gap-4 '>
+                <div className="col-span-12 md:col-span-6 print:col-span-6">
+                    <h4 className='text-base font-medium text-gray-800 dark:text-white/90 my-2'>Tompons Table</h4>
+                    <Table className='print-table overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]'>
+                        <TableHeader className="print-header border-b border-gray-100 dark:border-white/[0.05]">
+                            <TableRow>
+                                <TableCell
+                                    isHeader
+                                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                                >
+                                    Title
                                 </TableCell>
-                                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                    {item.category}
+                                <TableCell
+                                    isHeader
+                                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                                >
+                                    Price
                                 </TableCell>
-                                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                    {item.price} DA
-                                </TableCell>
-
-                                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 flex items-center gap-2">
-                                    <PencilSquareIcon className='text-brand-500 cursor-pointer size-7' onClick={() => openModal(item)} />
-                                    <TrashIcon className='text-brand-500 cursor-pointer size-7' onClick={()=>{
-                                        openDeleteModal(item._id , (id)=>{ dispatch(updateCashRegisterPage({pageId , deleteItemId : id}))});
-                                    }}/>
+                                <TableCell
+                                    isHeader
+                                    className="no-print px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                                >
+                                    Actions
                                 </TableCell>
                             </TableRow>
-                        )
-                    })}
-                </TableBody>
-            </Table>
+                        </TableHeader>
+
+                        <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+                            {tCat.map((item) => {
+                                return (
+                                    <TableRow key={item._id}
+                                    >
+                                        <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
+                                            {item.title}
+                                        </TableCell>
+                                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                            {item.price} DA
+                                        </TableCell>
+
+                                        <TableCell className="no-print px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 flex items-center gap-2">
+                                            <PencilSquareIcon className='text-brand-500 cursor-pointer size-7' onClick={() => openModal(item)} />
+                                            <TrashIcon className='text-brand-500 cursor-pointer size-7' onClick={() => {
+                                                openDeleteModal(item._id, (id) => { dispatch(updateCashRegisterPage({ pageId, deleteItemId: id })) });
+                                            }} />
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                            })}
+                        </TableBody>
+                    </Table>
+                </div>
+                <div className="col-span-12 md:col-span-6 print:col-span-6">
+                    <h4 className='text-base font-medium text-gray-800 dark:text-white/90 my-2'>Fourniture Table</h4>
+                    <Table className='print-table overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]'>
+                        <TableHeader className="print-header border-b border-gray-100 dark:border-white/[0.05]">
+                            <TableRow>
+                                <TableCell
+                                    isHeader
+                                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                                >
+                                    Title
+                                </TableCell>
+                                <TableCell
+                                    isHeader
+                                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                                >
+                                    Price
+                                </TableCell>
+                                <TableCell
+                                    isHeader
+                                    className="no-print px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                                >
+                                    Actions
+                                </TableCell>
+                            </TableRow>
+                        </TableHeader>
+
+
+                        <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+                            {fCat.map((item) => {
+                                return (
+                                    <TableRow key={item._id}
+                                    >
+                                        <TableCell className="px-4 py-3 text-gray-500 text-start font-semibold dark:text-gray-400">
+                                            {item.title}
+                                        </TableCell>
+                                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                            {item.price} DA
+                                        </TableCell>
+
+                                        <TableCell className="no-print px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 flex items-center gap-2">
+                                            <PencilSquareIcon className='text-brand-500 cursor-pointer size-7' onClick={() => openModal(item)} />
+                                            <TrashIcon className='text-brand-500 cursor-pointer size-7' onClick={() => {
+                                                openDeleteModal(item._id, (id) => { dispatch(updateCashRegisterPage({ pageId, deleteItemId: id })) });
+                                            }} />
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                            })}
+                        </TableBody>
+                    </Table>
+                </div>
+            </div>
+
+
 
             {isOpen &&
                 <Modal onClose={closeModal} isOpen={isOpen} className='max-w-[584px] p-5 lg:p-10'>
@@ -382,7 +441,7 @@ function CashItems({ items }: { items: CashRegisterPageItem[] }) {
 
                             <div className="col-span-1">
                                 <Label>Price</Label>
-                                <Input  type="number" placeholder="select item price" value={formData.price} onChange={(e) => handleChange('price', e.target.value)} required/>
+                                <Input type="number" placeholder="select item price" value={formData.price} onChange={(e) => handleChange('price', e.target.value)} required />
                             </div>
                         </div>
 

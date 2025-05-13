@@ -9,7 +9,8 @@ type BadgeColor =
   | "warning"
   | "info"
   | "light"
-  | "dark";
+  | "dark"
+  | string;
 
 interface BadgeProps {
   variant?: BadgeVariant; // Light or solid variant

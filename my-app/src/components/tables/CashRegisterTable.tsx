@@ -25,7 +25,7 @@ export default function CashRegisterTable() {
         dispatch(fetchCashRegisterPages());
     }, [dispatch]);
 
-    if (!cashRegisterPages) return null;
+    if (!cashRegisterPages || !registers) return null;
     return (
         <>
             <div className='flex justify-end'>

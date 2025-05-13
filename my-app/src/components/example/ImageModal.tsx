@@ -6,7 +6,7 @@ import { Modal } from '../ui/modal';
 interface ImageModalProps {
   isOpen: boolean;
   onClose: () => void;
-  imageUrl: string | null;
+  imageUrl: string | File | null;
 }
 
 export default function ImageModal({ isOpen, onClose, imageUrl }: ImageModalProps) {

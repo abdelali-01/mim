@@ -2,6 +2,7 @@
 import ComponentCard from '@/components/common/ComponentCard';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import CashRegisterPageTable from '@/components/tables/CashRegisterPageTable';
+import Button from '@/components/ui/button/Button';
 import { fetchCashRegisterPages, findCashRegisterPage } from '@/store/cash-register/cashRegisterHandler';
 import { AppDispatch, RootState } from '@/store/store'
 import { useParams } from 'next/navigation';
@@ -27,7 +28,7 @@ export default function Page() {
       <PageBreadcrumb pageTitle={`Cash Register Page`} 
       paths={['cash-register']}
       />
-      <ComponentCard title={`Cash Register Page`}>
+      <ComponentCard title={`Cash Register Page`} info={<Button size='sm' className='cursor-default'>{selectedPage.total} DA</Button>}>
         <CashRegisterPageTable page={selectedPage}/>
       </ComponentCard>
     </div>
