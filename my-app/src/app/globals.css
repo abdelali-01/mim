@@ -775,18 +775,17 @@ span.flatpickr-weekday,
     max-width: 21cm; /* Fixed table width of 21cm */
     margin: 0 auto; /* Center the table on the page */
     border-collapse: collapse; /* Collapse table borders */
-    font-family: Arial, sans-serif; /* Font for printing */
   }
 
   .print-table th,
   .print-table td {
     padding: 12px 4px; /* Add more padding for better readability */
-    border: 1px solid #ddd; /* Border for table cells */
+    border: 1px solid #6565655a; /* Border for table cells */
     text-align: left; /* Left-align the text */
   }
 
   .print-table th {
-    background-color: #f4f4f4; /* Light background for headers */
+    background-color: #ffffff; /* Light background for headers */
     font-weight: bold; /* Bold text for headers */
   }
 

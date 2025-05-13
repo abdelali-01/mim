@@ -15,7 +15,6 @@ router.get("/", rolePermissions(["super", "sub-super"]), async (req, res) => {
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m", date: "$date" } },
-          cashRegisterItems: { $push: "$$ROOT" },
           t_total: { $sum: "$t_total" },
           f_total: { $sum: "$f_total" },
           total: { $sum: "$total" },
@@ -41,7 +40,7 @@ router.post("/", rolePermissions(["super", "sub-super"]), async (req, res) => {
     const saved = await newPage.save();
     res.status(201).json(saved);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ message: err.message });
   }
 });
 
@@ -61,7 +60,7 @@ router.put(
       } = req.body;
 
       const page = await CashRegister.findById(req.params.id);
-      if (!page) return res.status(404).json({ error: "Page not found" });
+      if (!page) return res.status(404).json({ message: "Page not found" });
 
       // Add item
       if (addItem) {

@@ -23,7 +23,7 @@ export const addCashRegisterPage = () => async (dispatch: AppDispatch) => {
     } catch (error) {
         console.log('Error during adding the page', error);
         dispatch(setError({
-            message: error.response?.data.error || error.message
+            message: error.response?.data.message || error.message
         }))
     }
 };
@@ -45,7 +45,7 @@ export const fetchCashRegisterPages = () => async (dispatch: AppDispatch) => {
     } catch (error) {
         console.log('Error during getting the cash register pages', error);
         dispatch(setError({
-            message: error.response?.data.error || error.message
+            message: error.response?.data.message || error.message
         }))
     }
 }

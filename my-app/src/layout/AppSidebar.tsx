@@ -36,7 +36,7 @@ const navItems: NavItem[] = [
   {
     icon : <ListIcon/> ,
     name : "Orders",
-    subItems: [{ name: "Trodat", path: "/admin/trodat-orders" } , { name: "Other", path: "/admin/orders" }],
+    subItems: [{ name: "Trodat Register", path: "/admin/trodat-orders" } , { name: "Other", path: "/admin/orders" }],
   },
   {
     name: "Manage",

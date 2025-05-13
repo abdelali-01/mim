@@ -5,6 +5,7 @@ import alertReducer from './alert/alertSlice';
 import notebookReducer from './notebooks/notebookSlice';
 import accountReducer from './accounts/accountsSlice';
 import cashRegisterReducer from './cash-register/cashRegisterSlice';
+import trodatRegisterReducer from './trodat-register/trodatRegisterSlice';
 
 export const store = configureStore({
     reducer : {
@@ -13,7 +14,8 @@ export const store = configureStore({
         alert : alertReducer ,
         notebooks : notebookReducer ,
         accounts : accountReducer,
-        cashRegister : cashRegisterReducer 
+        cashRegister : cashRegisterReducer ,
+        trodatRegister : trodatRegisterReducer ,
     }
 });
 

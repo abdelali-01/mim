@@ -157,8 +157,8 @@ export default function SignUpForm() {
                     <Select options={[
                       { value: 'super', label: 'Super admin' },
                       { value: 'sub-super', label: 'Sub Super admin' },
-                      { value: 'manager', label: 'Manager' },
-                      { value: 'reader', label: 'Reader' },
+                      { value: 'manager', label: 'Order Manager' },
+                      // { value: 'reader', label: 'Reader' },
                     ]}
                       onChange={(value) => {
                         setUser(prev => ({ ...prev, role: value }))

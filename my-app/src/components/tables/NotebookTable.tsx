@@ -46,6 +46,7 @@ export default function NotebookTable({ notebook }: Props) {
   // search logic
   const [filredTable , setFiltredTable] = useState(notebook.table);
   const {search} = useSearch();
+
   useEffect(()=>{
     if(notebook.table){
       const result = filterItems(notebook.table , search);

@@ -28,7 +28,6 @@ interface Register {
     total: number;
     t_total: number;
     f_total: number;
-    cashRegisterItems: CashRegisterPage[];
 }
 
 interface StateType {

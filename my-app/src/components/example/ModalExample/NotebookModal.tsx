@@ -60,8 +60,6 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
     setItem({ ...item, products: updatedProducts });
   };
 
-
-
   const handleRemoveProduct = (index: number) => {
     if (!item) return;
     const updatedProducts = item.products.filter((_, i) => i !== index);

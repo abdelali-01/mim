@@ -5,37 +5,38 @@ import { useRouter } from 'next/navigation';
 import { filterItems, formatDateToISO } from '@/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store/store';
-import { deleteCashRegisterPage, fetchCashRegisterPages } from '@/store/cash-register/cashRegisterHandler';
 import { ArrowTopRightOnSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import ChartTab from '../common/ChartTab';
 import { useDeleteModal } from '@/context/DeleteModalContext';
+import { deleteTrodatRegisterPage, fetchTrodatRegisterPages } from '@/store/trodat-register/trodatRegisterHandler';
 import { useSearch } from '@/context/SearchContext';
 
 
-export default function CashRegisterTable() {
+export default function TrodatRegistersTable() {
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>()
-    const { cashRegisterPages, registers } = useSelector((state: RootState) => state.cashRegister);
+    const { trodatRegisterPages , registers } = useSelector((state: RootState) => state.trodatRegister);
     const [filterType, setFilterType] = useState<"daily" | "monthly">("daily");
 
 
     const { openModal } = useDeleteModal();
+
     useEffect(() => {
-        dispatch(fetchCashRegisterPages());
+        dispatch(fetchTrodatRegisterPages());
     }, [dispatch]);
 
-    // search logic
-    const [searchedPages , setSearchedPages ] = useState(cashRegisterPages)
-    const {search} = useSearch();
-
-    useEffect(()=>{
-        if(cashRegisterPages) 
-        {
-            setFilterType('daily');
-            const result = filterItems(cashRegisterPages , search);
-            setSearchedPages(result);
-        }
-    },[search , cashRegisterPages]);
+        // search logic
+        const [searchedPages , setSearchedPages ] = useState(trodatRegisterPages)
+        const {search} = useSearch();
+    
+        useEffect(()=>{
+            if(trodatRegisterPages) 
+            {
+                setFilterType('daily');
+                const result = filterItems(trodatRegisterPages , search);
+                setSearchedPages(result);
+            }
+        },[search , trodatRegisterPages]);
 
     if (!searchedPages || !registers) return null;
     return (
@@ -61,19 +62,13 @@ export default function CashRegisterTable() {
                                         isHeader
                                         className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                                     >
-                                        Trodat total
+                                        trodat sell´s
                                     </TableCell>
                                     <TableCell
                                         isHeader
                                         className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                                     >
-                                        Fourniture total
-                                    </TableCell>
-                                    <TableCell
-                                        isHeader
-                                        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                                    >
-                                        Total
+                                        total
                                     </TableCell>
                                 </TableRow>
                             </TableHeader>
@@ -87,13 +82,10 @@ export default function CashRegisterTable() {
                                             {formatDateToISO(register._id)}
                                         </TableCell>
                                         <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                            {register.t_total || 0} DA
+                                            {register.trodatSells} 
                                         </TableCell>
 
                                         <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                            {register.f_total || 0} DA
-                                        </TableCell>
-                                        <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                                             {register.total || 0} DA
                                         </TableCell>
                                     </TableRow>
@@ -120,13 +112,7 @@ export default function CashRegisterTable() {
                                             isHeader
                                             className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                                         >
-                                            Trodat total
-                                        </TableCell>
-                                        <TableCell
-                                            isHeader
-                                            className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                                        >
-                                            Fourniture total
+                                            Trodat sell´s
                                         </TableCell>
                                         <TableCell
                                             isHeader
@@ -138,7 +124,7 @@ export default function CashRegisterTable() {
                                             isHeader
                                             className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                                         >
-                                            Delete
+                                            Actions
                                         </TableCell>
                                     </TableRow>
                                 </TableHeader>
@@ -152,20 +138,17 @@ export default function CashRegisterTable() {
                                                 {formatDateToISO(page.date)}
                                             </TableCell>
                                             <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                                {page.t_total || 0} DA
+                                                {page.trodatSells}
                                             </TableCell>
 
                                             <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                                {page.f_total || 0} DA
-                                            </TableCell>
-                                            <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                                                 {page.total || 0} DA
                                             </TableCell>
                                             <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
                                                 <ArrowTopRightOnSquareIcon className='text-brand-500 cursor-pointer size-7'
-                                                    onClick={() => { router.push(`/admin/cash-register/${page._id}`) }}
+                                                    onClick={() => { router.push(`/admin/trodat-orders/${page._id}`) }}
                                                 />
-                                                <TrashIcon className='text-brand-500 cursor-pointer size-7' onClick={() => openModal(page._id, (id) => { dispatch(deleteCashRegisterPage(id)) })} />
+                                                <TrashIcon className='text-brand-500 cursor-pointer size-7' onClick={() => openModal(page._id, (id) => { dispatch(deleteTrodatRegisterPage(id)) })} />
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -173,7 +156,8 @@ export default function CashRegisterTable() {
                             </Table>
                         </div>
                     </div>
-                </div>}
+                </div>
+            }
         </>
     )
 }

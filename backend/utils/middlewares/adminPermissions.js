@@ -12,7 +12,7 @@ export const rolePermissions = (roles) => {
     const hasPermission = roles.includes(user.role);
     
     if (!hasPermission) {
-      return res.status(403).json({ message: "Forbidden" });
+      return res.status(403).json({ message: "You role doesn`t support this feature !" });
     }
 
     next();
