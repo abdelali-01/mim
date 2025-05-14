@@ -13,11 +13,12 @@ import { useSearch } from '@/context/SearchContext';
 
 
 export default function TrodatRegistersTable() {
+    const { user } = useSelector((state: RootState) => state.auth);
+
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>()
-    const { trodatRegisterPages , registers } = useSelector((state: RootState) => state.trodatRegister);
+    const { trodatRegisterPages, registers } = useSelector((state: RootState) => state.trodatRegister);
     const [filterType, setFilterType] = useState<"daily" | "monthly">("daily");
-
 
     const { openModal } = useDeleteModal();
 
@@ -25,25 +26,25 @@ export default function TrodatRegistersTable() {
         dispatch(fetchTrodatRegisterPages());
     }, [dispatch]);
 
-        // search logic
-        const [searchedPages , setSearchedPages ] = useState(trodatRegisterPages)
-        const {search} = useSearch();
-    
-        useEffect(()=>{
-            if(trodatRegisterPages) 
-            {
-                setFilterType('daily');
-                const result = filterItems(trodatRegisterPages , search);
-                setSearchedPages(result);
-            }
-        },[search , trodatRegisterPages]);
+    // search logic
+    const [searchedPages, setSearchedPages] = useState(trodatRegisterPages)
+    const { search } = useSearch();
+
+    useEffect(() => {
+        if (trodatRegisterPages) {
+            setFilterType('daily');
+            const result = filterItems(trodatRegisterPages, search);
+            setSearchedPages(result);
+        }
+    }, [search, trodatRegisterPages]);
 
     if (!searchedPages || !registers) return null;
     return (
         <>
-            <div className='flex justify-end'>
+            {user?.role !== 'manager' && <div className='flex justify-end'>
                 <ChartTab selected={filterType} onSelect={setFilterType} />
-            </div>
+            </div>}
+
 
             {filterType === 'monthly' ? <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
                 <div className="max-w-full overflow-x-auto">
@@ -82,7 +83,7 @@ export default function TrodatRegistersTable() {
                                             {formatDateToISO(register._id)}
                                         </TableCell>
                                         <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                            {register.trodatSells} 
+                                            {register.trodatSells}
                                         </TableCell>
 
                                         <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
@@ -148,7 +149,7 @@ export default function TrodatRegistersTable() {
                                                 <ArrowTopRightOnSquareIcon className='text-brand-500 cursor-pointer size-7'
                                                     onClick={() => { router.push(`/admin/trodat-orders/${page._id}`) }}
                                                 />
-                                                <TrashIcon className='text-brand-500 cursor-pointer size-7' onClick={() => openModal(page._id, (id) => { dispatch(deleteTrodatRegisterPage(id)) })} />
+                                                {user?.role !== 'manager' && <TrashIcon className='text-brand-500 cursor-pointer size-7' onClick={() => openModal(page._id, (id) => { dispatch(deleteTrodatRegisterPage(id)) })} />}
                                             </TableCell>
                                         </TableRow>
                                     ))}

@@ -7,7 +7,7 @@ import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
 import { RootState } from "@/store/store";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 
@@ -18,7 +18,8 @@ export default function AdminLayout({
 }) {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
   const { user } = useSelector((state: RootState) => state.auth);
-  const router = useRouter()
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const check = setTimeout(() => {
@@ -27,7 +28,15 @@ export default function AdminLayout({
       }
     }, 5000);
     return () => clearTimeout(check);
-  }, [user, router])
+  }, [user, router]);
+
+  useEffect(()=>{
+    if(user && user.role === 'manager'){
+      if(pathname.startsWith('/notebooks') || pathname.startsWith('/cash-register') || pathname === '/admin' || pathname === '/accounts' || pathname === '/signup'){
+        router.push('/admin/trodat-orders');
+      }
+    }
+  },[pathname , user , router]);
 
   // Dynamic class for main content margin based on sidebar state
   const mainContentMargin = isMobileOpen

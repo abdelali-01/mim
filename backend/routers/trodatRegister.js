@@ -46,7 +46,7 @@ router.post("/", rolePermissions(["super", "sub-super"]), async (req, res) => {
 });
 
 // PUT: Add / Update / Remove order entries
-router.put("/:id", rolePermissions(["super", "sub-super"]), async (req, res) => {
+router.put("/:id", rolePermissions(["super", "sub-super" , 'manager']), async (req, res) => {
   try {
     const { addOrder, updateOrder, removeOrderId } = req.body;
 

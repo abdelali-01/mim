@@ -11,11 +11,11 @@ export const registerUser = (user: User, clearFrom: () => void) => async (dispat
     dispatch(setIsFeching(true));
     try {
         const res = await axios.post(`${server}/api/auth/signup`, user, { withCredentials: true });
-        if(res){
+        if (res) {
             console.log('client registred');
             dispatch(setSuccessAlert('Your client is registred successfully'))
             clearFrom();
-            
+
             setTimeout(() => {
                 dispatch(setSuccessAlert(null)); // Clear alert after 3 seconds
             }, 3000);
@@ -60,14 +60,48 @@ export const checkIfLoggedIn = (pathname: string, router: AppRouterInstance) => 
         const userLogged = res.data?.user;
         if (userLogged) {
             dispatch(setUser(userLogged));
-            if (pathname === '/signin') {
+            if (pathname === '/signin' || pathname === '/') {
                 if (userLogged.isAdmin) router.push('/admin')
-                else router.push('/');
+                else router.push('/signin');
             }
         }
 
     } catch (error) {
         console.log('error during check if logged in', error);
+    }
+}
+
+export const getUser = (userId : string | undefined) => async (dispatch: AppDispatch) => {
+    if(!userId) return ;
+    try {
+        const res = await axios.get(`${server}/api/auth/${userId}`, { withCredentials: true });
+
+        if (res)
+            dispatch(setUser(res.data))
+    } catch (error) {
+        console.log('error during getting the user', error);
+        dispatch(setError({
+            message: error.response?.data.message || error.message
+        }))
+    }
+}
+
+export const updateAccount = (userInfo: User) => async (dispatch: AppDispatch) => {
+    try {
+        await axios.put(`${server}/api/auth/${userInfo._id}`, userInfo, { withCredentials: true });
+
+        dispatch(setSuccessAlert('Your Account has been updated successfully'));
+        dispatch(getUser(userInfo._id));
+        
+        setTimeout(() => {
+            dispatch(setSuccessAlert(null));
+        }, 3000);
+        
+    } catch (error) {
+        console.log('error during updating the account', error);
+        dispatch(setError({
+            message: error.response?.data.message || error.message
+        }))
     }
 }
 

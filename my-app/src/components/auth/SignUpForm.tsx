@@ -10,7 +10,7 @@ import { AppDispatch } from "@/store/store";
 import { registerUser } from "@/store/auth/authHandler";
 
 export interface User {
-  _id? : string ;
+  _id?: string;
   username: string;
   email: string;
   phone: string;
@@ -20,12 +20,12 @@ export interface User {
 }
 
 const userState = {
-    username: '',
-    email: '',
-    phone: '',
-    password: '',
-    isAdmin: false,
-    role: ''
+  username: '',
+  email: '',
+  phone: '',
+  password: '',
+  isAdmin: false,
+  role: ''
 }
 
 export default function SignUpForm() {
@@ -42,9 +42,9 @@ export default function SignUpForm() {
     }));
   };
 
-  const submitHandler = (e : React.FormEvent<HTMLFormElement>)=>{
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(registerUser(user , ()=> setUser(userState)));
+    dispatch(registerUser(user, () => setUser(userState)));
   }
 
   return (
@@ -62,7 +62,7 @@ export default function SignUpForm() {
         <div>
           <div className="mb-5 sm:mb-8">
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              Register your client
+              Register your client / admin
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Enter the information below to register you client!
@@ -74,13 +74,13 @@ export default function SignUpForm() {
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <div className="sm:col-span-1">
                     <Label>
-                      Client Name<span className="text-error-500">*</span>
+                      Client / Admin Name<span className="text-error-500">*</span>
                     </Label>
                     <Input
                       type="text"
                       id="username"
                       name="username"
-                      placeholder="Enter your client name"
+                      placeholder="Enter your client / admin name"
                       required
                       value={user.username}
                       onChange={handleChange}
@@ -95,7 +95,7 @@ export default function SignUpForm() {
                       type="text"
                       id="phone"
                       name="phone"
-                      placeholder="Enter your client phone"
+                      placeholder="Enter your client / admin phone"
                       required
                       value={user.phone}
                       onChange={handleChange}
@@ -109,7 +109,7 @@ export default function SignUpForm() {
                       type="email"
                       id="email"
                       name="email"
-                      placeholder="Enter your client email"
+                      placeholder="Enter your client / admin email"
                       required
                       value={user.email}
                       onChange={handleChange}
@@ -121,12 +121,13 @@ export default function SignUpForm() {
                     </Label>
                     <div className="relative">
                       <Input
-                        placeholder="Enter your client password"
+                        placeholder="Enter your client / admin password"
                         type={showPassword ? "text" : "password"}
                         required
                         name="password"
                         value={user.password}
                         onChange={handleChange}
+                        minLength={8}
                       />
                       <span
                         onClick={() => setShowPassword(!showPassword)}

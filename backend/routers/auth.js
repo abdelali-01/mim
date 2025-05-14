@@ -28,27 +28,45 @@ router.get("/", (req, res) => {
   }
 });
 
-// get the admins 
-router.get('/admins' , rolePermissions(['super' , 'sub-super']) ,async (req, res) => {
+// get the user
+router.get('/:id' , async (req, res) => {
+  const {id} = req.params ;
   try {
-    const admins = await User.find({isAdmin : true});
-    if(!admins){
-      return res.status(404).json({
-        message : 'No admin found !'
-      })
-    }
+    const findUser = await User.findById(id);
+    if(!findUser) return res.status(404).json({message : 'User not found !'});
 
-    res.status(200).json({
-      message : 'success',
-      admins ,
-    });
+    res.status(200).send(findUser);
   } catch (error) {
-    console.log('Error during getting the admins' , error);
-          res
-        .status(500)
-        .json({ message: "Error getting admin accounts", error: err.message });
+    console.log('error during getting user ' , error)
+    res.status(400).json({message : error.message});
   }
 })
+
+// get the admins
+router.get(
+  "/admins",
+  rolePermissions(["super", "sub-super"]),
+  async (req, res) => {
+    try {
+      const admins = await User.find({ isAdmin: true });
+      if (!admins) {
+        return res.status(404).json({
+          message: "No admin found !",
+        });
+      }
+
+      res.status(200).json({
+        message: "success",
+        admins,
+      });
+    } catch (error) {
+      console.log("Error during getting the admins", error);
+      res
+        .status(500)
+        .json({ message: "Error getting admin accounts", error: err.message });
+    }
+  }
+);
 
 // Signup route
 router.post(
@@ -96,19 +114,18 @@ router.post(
       });
       await newUser.save();
 
-      // create notebook for registred client 
+      // create notebook for registred client
       const notebook = {
-        client : {
-          username : newUser.username ,
-          phone : newUser.phone ,
-          id : newUser._id
-        }
-      }
-      if(!newUser.isAdmin){
+        client: {
+          username: newUser.username,
+          phone: newUser.phone,
+          id: newUser._id,
+        },
+      };
+      if (!newUser.isAdmin) {
         const createdNotebook = new Notebook(notebook);
         await createdNotebook.save();
       }
-      
 
       res.status(201).json({ message: "User registered successfully" });
     } catch (err) {
@@ -210,6 +227,28 @@ router.post("/reset-password/:token", async (req, res) => {
     res
       .status(500)
       .json({ message: "Error resetting password", error: error.message });
+  }
+});
+
+// update account information
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;  
+  try {
+    const findUser = await User.findById(id);
+    if (!findUser) {
+      return res.status(404).json({ message: "User Account not found !" });
+    }
+
+    if(req.body.password){
+        const hashedPassword = await bcrypt.hash(password, 10);
+        req.body.password = hashedPassword ;
+    }
+
+    await User.findByIdAndUpdate(id, { $set: req.body });
+    res.sendStatus(200);
+  } catch (error) {
+    console.log("error durring update the account information", error);
+    res.status(400).json({ message: error.message });
   }
 });
 

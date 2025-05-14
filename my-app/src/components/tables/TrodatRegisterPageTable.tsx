@@ -105,9 +105,10 @@ export default function TrodatRegisterPageTable({ selectedPage }: { selectedPage
                 </div>
             </div>
 
-            <div className="flex justify-end my-3 no-print">
+            {user?.role !== 'manager' && <div className="flex justify-end my-3 no-print">
                 <Button size='sm' onClick={() => openModal()}>Add Order</Button>
-            </div>
+            </div>}
+
             <div className="max-w-full overflow-x-auto print:overflow-visible">
                 <div className="min-w-[1000px] print:min-w-0 print:w-full">
                     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">

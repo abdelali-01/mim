@@ -126,17 +126,21 @@ export default function TrodatOrderModal({ dataOrder, closeModal }: Props) {
 
             <div className='flex items-center gap-2 my-3'>
 
-                <Button type='button' size='sm' variant={`${isChecked.paid ? 'success' : 'light'}`} className='flex-1' startIcon={<CheckCircleIcon className='size-5' />}
+                {user?.role !== 'manager' && <Button type='button' size='sm' variant={`${isChecked.paid ? 'success' : 'light'}`} className='flex-1' startIcon={<CheckCircleIcon className='size-5' />}
                     onClick={() => setIsCheked(prev => ({ ...prev, paid: !isChecked.paid }))}
-                >Paid</Button>
+                >Paid
+                </Button>}
+
                 {dataOrder &&
                     <>
                         <Button type='button' size='sm' variant={`${isChecked.complete ? 'success' : 'light'}`} className='flex-1' startIcon={<CheckCircleIcon className='size-5' />}
                             onClick={() => setIsCheked(prev => ({ ...prev, complete: !isChecked.complete }))}
                         >Completed</Button>
-                        <Button type='button' size='sm' variant={`${isChecked.delivered ? 'success' : 'light'}`} className='flex-1' startIcon={<CheckCircleIcon className='size-5' />}
-                            onClick={() => setIsCheked(prev => ({ ...prev, delivered: !isChecked.delivered }))}
-                        >Delivered</Button>
+                        {
+                            user?.role !== 'manager' && <Button type='button' size='sm' variant={`${isChecked.delivered ? 'success' : 'light'}`} className='flex-1' startIcon={<CheckCircleIcon className='size-5' />}
+                                onClick={() => setIsCheked(prev => ({ ...prev, delivered: !isChecked.delivered }))}
+                            >Delivered</Button>
+                        }
                     </>
                 }
             </div>
