@@ -1,24 +1,18 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
-  BoxCubeIcon,
   CalenderIcon,
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
   ListIcon,
-  PageIcon,
-  PieChartIcon,
   PlugInIcon,
-  TableIcon,
   TaskIcon,
   UserCircleIcon,
 } from "../icons/index";
-import SidebarWidget from "./SidebarWidget";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
@@ -44,15 +38,15 @@ const navItems: NavItem[] = [
     name: "Manage",
     icon: <TaskIcon />,
     subItems: [{ name: "Cash register", path: "/admin/cash-register" },
-    //  { name: "Services", path: "/admin/services" } ,
-    { name: "Notebooks ( credit )", path: "/admin/notebooks" }],
+      {name : "Tampons Stock" , path: '/admin/tampon-stock'},
+    { name: "Notebooks ( credit )", path: "/admin/notebooks" }
+  ],
   },
   {
     icon: <CalenderIcon />,
     name: "Calendar",
     path: "/admin/calendar",
   },
-
 ];
 
 const navManagerItems : NavItem[] = [

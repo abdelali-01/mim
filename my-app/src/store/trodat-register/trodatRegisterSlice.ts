@@ -28,16 +28,24 @@ export interface TrodatRegister {
   total: number;
 }
 
+export interface StockTable {
+  _id : string ;
+  table : {model : string ; price : number ; quantity : number}[];
+  quantity : number ;
+}
+
 interface StateType {
   registers: TrodatRegister[] | null;
   trodatRegisterPages: TrodatRegisterPage[] | null;
   selectedPage: TrodatRegisterPage | null;
+  stockTable : StockTable | null ;
 }
 
 const initialState: StateType = {
   registers: null,
   trodatRegisterPages: null,
   selectedPage: null,
+  stockTable : null ;
 };
 
 const trodatRegisterSlice = createSlice({
@@ -53,6 +61,9 @@ const trodatRegisterSlice = createSlice({
     setSelectedTrodatPage: (state, action) => {
       state.selectedPage = action.payload;
     },
+    setStockTable : (state , action)=> {
+      state.stockTable = action.payload
+    }
   },
 });
 

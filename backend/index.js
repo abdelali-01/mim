@@ -67,9 +67,11 @@ import productRoutes from "./routers/product.js";
 import notebookRoutes from "./routers/notebook.js";
 import cashRegisterRoutes from './routers/cashRegister.js';
 import trodatRegisterRoues from './routers/trodatRegister.js';
+import tamponsTableRoutes from './routers/tamponTable.js';
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/notebooks", notebookRoutes);
 app.use('/api/cash-register' , cashRegisterRoutes);
 app.use('/api/trodat-register' , trodatRegisterRoues);
+app.use('/api/tompon' , tamponsTableRoutes);

@@ -83,7 +83,7 @@ export default function CashRegisterTable() {
                                 {registers.map(register => (
                                     <TableRow key={register._id}
                                     >
-                                        <TableCell className="px-5 py-4 sm:px-6  text-white font-semibold text-start dark:text-gray-400">
+                                        <TableCell className="px-5 py-4 sm:px-6  text-gray-500 font-semibold text-start dark:text-gray-400">
                                             {formatDateToISO(register._id)}
                                         </TableCell>
                                         <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
@@ -148,7 +148,7 @@ export default function CashRegisterTable() {
                                     {searchedPages.map(page => (
                                         <TableRow key={page._id}
                                         >
-                                            <TableCell className="px-5 py-4 sm:px-6  text-white font-semibold text-start dark:text-gray-400">
+                                            <TableCell className="px-5 py-4 sm:px-6  text-gray-500 font-semibold text-start dark:text-gray-400">
                                                 {formatDateToISO(page.date)}
                                             </TableCell>
                                             <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
