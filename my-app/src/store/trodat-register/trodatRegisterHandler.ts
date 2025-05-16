@@ -102,26 +102,6 @@ export const updateTrodatRegisterPage = (payload: UpdateTrodatPayload) => async 
   }
 };
 
-// Mark a specific order as completed
-export const completeTrodatOrder = (pageId: string, orderId: string) => async (dispatch: AppDispatch) => {
-  try {
-    const res = await axios.put(
-      `${server}/api/trodat-register/${pageId}/complete-order/${orderId}`,
-      {},
-      { withCredentials: true }
-    );
-
-    dispatch(setSuccessAlert("Order marked as completed"));
-    dispatch(fetchTrodatRegisterPages());
-
-    setTimeout(() => {
-      dispatch(setSuccessAlert(null));
-    }, 3000);
-  } catch (error) {
-    console.error("Error completing order:", error);
-    dispatch(setError({ message: error.response?.data?.message || error.message }));
-  }
-};
 
 // Delete a page
 export const deleteTrodatRegisterPage = (pageId: ParamValue | string) => async (dispatch: AppDispatch) => {
