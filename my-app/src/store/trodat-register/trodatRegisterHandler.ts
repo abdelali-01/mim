@@ -8,6 +8,7 @@ import {
   setTrodatRegisterPages,
   setTrodatRegisters,
   setSelectedTrodatPage,
+  setStockTable,
 } from "./trodatRegisterSlice";
 import { ParamValue } from "next/dist/server/request/params";
 
@@ -138,3 +139,36 @@ export const deleteTrodatRegisterPage = (pageId: ParamValue | string) => async (
     dispatch(setError({ message: error.response?.data?.message || error.message }));
   }
 };
+
+
+
+// trodat stock
+export const fecthTrodatStockTable = () => async (dispatch: AppDispatch) => {
+  try {
+    const res = await axios.get(`${server}/api/tampon`, { withCredentials: true });
+    dispatch(setStockTable(res.data));
+  } catch (error) {
+    console.log('error fetching Trodat stock table', error);
+    setError({
+      message: error.response?.data.message || error.message
+    })
+  }
+}
+
+export const updateTableStock = (table , id : string) => async (dispatch: AppDispatch) => {
+  try {
+    await axios.put(`${server}/api/tampon/${id}` , {table} , {withCredentials : true});
+
+    dispatch(setSuccessAlert('Your stock has been updated'));
+    dispatch(fecthTrodatStockTable());
+    
+    setTimeout(() => {
+      dispatch(setSuccessAlert(null));
+    }, 3000);
+  } catch (error) {
+    console.log('error updating Trodat stock table', error);
+    setError({
+      message: error.response?.data.message || error.message
+    })
+  }
+}

@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
       await tamponTable.save();
     }
 
-    res.status(200).json(tamponTable);
+    res.status(200).send(tamponTable);
   } catch (error) {
     console.log("error during getting the tampons table", error);
     res.status(400).json({ message: error.message });

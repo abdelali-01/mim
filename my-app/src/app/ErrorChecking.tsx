@@ -25,7 +25,7 @@ export default function ErrorChecking() {
         <>
             {error &&
                 <Modal onClose={modal.closeModal} isOpen={modal.isOpen}
-                    className="max-w-[600px] p-5 lg:p-10">
+                    className="max-w-[600px] p-5 lg:p-10" index="z-999999">
                     <ErrorModal errorDetails={error} closeModal={modal.closeModal} />
                 </Modal>}
         </>

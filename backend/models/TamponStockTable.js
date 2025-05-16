@@ -6,6 +6,7 @@ const tamponStockTable = mongoose.Schema({
       model: {
         type: String,
         required: [true, "The model is required field !"],
+        unique : true
       },
       quantity: {
         type: Number,

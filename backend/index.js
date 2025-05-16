@@ -74,4 +74,4 @@ app.use("/api/products", productRoutes);
 app.use("/api/notebooks", notebookRoutes);
 app.use('/api/cash-register' , cashRegisterRoutes);
 app.use('/api/trodat-register' , trodatRegisterRoues);
-app.use('/api/tompon' , tamponsTableRoutes);
+app.use('/api/tampon' , tamponsTableRoutes);

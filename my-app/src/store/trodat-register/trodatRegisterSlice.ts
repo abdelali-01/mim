@@ -30,7 +30,7 @@ export interface TrodatRegister {
 
 export interface StockTable {
   _id : string ;
-  table : {model : string ; price : number ; quantity : number}[];
+  table : {_id? : string ; model : string ; price : number ; quantity : number}[];
   quantity : number ;
 }
 
@@ -45,7 +45,7 @@ const initialState: StateType = {
   registers: null,
   trodatRegisterPages: null,
   selectedPage: null,
-  stockTable : null ;
+  stockTable : null
 };
 
 const trodatRegisterSlice = createSlice({
@@ -71,6 +71,7 @@ export const {
   setTrodatRegisterPages,
   setTrodatRegisters,
   setSelectedTrodatPage,
+  setStockTable
 } = trodatRegisterSlice.actions;
 
 export default trodatRegisterSlice.reducer;

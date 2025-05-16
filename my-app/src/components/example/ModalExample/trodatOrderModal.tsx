@@ -2,6 +2,7 @@
 
 import Input from '@/components/form/input/InputField'
 import Label from '@/components/form/Label'
+import Select from '@/components/form/Select';
 import Button from '@/components/ui/button/Button'
 import { AppDispatch, RootState } from '@/store/store';
 import { updateTrodatRegisterPage } from '@/store/trodat-register/trodatRegisterHandler';
@@ -35,6 +36,8 @@ export default function TrodatOrderModal({ dataOrder, closeModal }: Props) {
     const { user } = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch<AppDispatch>();
     const { pageId } = useParams();
+
+    const { stockTable } = useSelector((state: RootState) => state.trodatRegister);
 
 
     useEffect(() => {
@@ -118,6 +121,14 @@ export default function TrodatOrderModal({ dataOrder, closeModal }: Props) {
     }
 
 
+    // Generate dropdown options from stockTable.table
+    const modelOptions = stockTable?.table?.map((item) => ({
+        value: item.model,
+        label: item.model,
+    })) || [];
+
+
+    if(!stockTable) return null ;
     return (
         <form className="" onSubmit={handleSave}>
             <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
@@ -154,8 +165,21 @@ export default function TrodatOrderModal({ dataOrder, closeModal }: Props) {
                 </div>
                 <div className="col-span-1">
                     <Label>Model *</Label>
-                    <Input type="text" name='model' placeholder="example : Trodat 11" value={orderInfo?.model} required
-                        onChange={changeHandler}
+                    <Select
+                        placeholder="Select model"
+                        options={modelOptions}
+                        defaultValue={orderInfo?.model}
+                        required
+                        onChange={(value) => {
+                            const selectedModel = stockTable.table.find((item) => item.model === value);
+                            if (selectedModel) {
+                                setOrderInfo((prev) => ({
+                                    ...prev,
+                                    model: selectedModel.model,
+                                    price: selectedModel.price,
+                                }));
+                            }
+                        }}
                         disabled={isDisabled} />
                 </div>
 

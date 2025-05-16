@@ -3,11 +3,16 @@ import ComponentCard from '@/components/common/ComponentCard';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TrodatRegistersTable from '@/components/tables/TrodatRegistersTable';
 import { AppDispatch } from '@/store/store';
-import { addTrodatRegisterPage } from '@/store/trodat-register/trodatRegisterHandler';
+import { addTrodatRegisterPage, fecthTrodatStockTable } from '@/store/trodat-register/trodatRegisterHandler';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 export default function TrodatRegister() {
     const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(()=>{
+        dispatch(fecthTrodatStockTable())
+    },[dispatch]);
 
     return (
         <div>

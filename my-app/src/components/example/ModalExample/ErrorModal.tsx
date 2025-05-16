@@ -1,7 +1,7 @@
 import React from 'react'
 
 interface Props {
-    errorDetails : {status : number ; message : string} ;
+    errorDetails : {status? : number ; message : string ; desc? : string} ;
     closeModal : ()=>void ;
 }
 
@@ -46,10 +46,9 @@ export default function ErrorModal({ errorDetails , closeModal} : Props) {
             <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
                 {errorDetails.message}
             </h4>
-            {/* <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
-                Lorem ipsum dolor sit amet consectetur. Feugiat ipsum libero tempor
-                felis risus nisi non. Quisque eu ut tempor curabitur.
-            </p> */}
+            {errorDetails.desc && <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
+                {errorDetails.desc}
+            </p>}
 
             <div className="flex items-center justify-center w-full gap-3 mt-7">
                 <button
