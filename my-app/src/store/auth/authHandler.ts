@@ -71,8 +71,8 @@ export const checkIfLoggedIn = (pathname: string, router: AppRouterInstance) => 
     }
 }
 
-export const getUser = (userId : string | undefined) => async (dispatch: AppDispatch) => {
-    if(!userId) return ;
+export const getUser = (userId: string | undefined) => async (dispatch: AppDispatch) => {
+    if (!userId) return;
     try {
         const res = await axios.get(`${server}/api/auth/${userId}`, { withCredentials: true });
 
@@ -92,11 +92,11 @@ export const updateAccount = (userInfo: User) => async (dispatch: AppDispatch) =
 
         dispatch(setSuccessAlert('Your Account has been updated successfully'));
         dispatch(getUser(userInfo._id));
-        
+
         setTimeout(() => {
             dispatch(setSuccessAlert(null));
         }, 3000);
-        
+
     } catch (error) {
         console.log('error during updating the account', error);
         dispatch(setError({
@@ -119,5 +119,37 @@ export const loggedOut = (router: AppRouterInstance) => async (dispatch: AppDisp
             message: error.response?.data.message || error.message
         }
         dispatch(setError(errorDetails));
+    }
+}
+
+
+export const SendEmailReset = (email: string, setState: () => void) => async (dispatch: AppDispatch) => {
+    dispatch(setIsFeching(true))
+    try {
+        await axios.post(`${server}/api/auth/reset-password`, { email }, { withCredentials: true });
+        setState();
+    } catch (error) {
+        dispatch(setError({
+            message: error.response?.data.message || error.message
+        }))
+    } finally {
+        dispatch(setIsFeching(false))
+    }
+}
+
+export const sendPasswordResset = (password: string, token: string , router : AppRouterInstance) => async (dispatch: AppDispatch) => {
+    try {
+        await axios.post(`${server}/api/auth/reset-password/${token}` , {password} , {withCredentials : true});
+
+        dispatch(setSuccessAlert('Your password has been updated'));
+        router.push('/signin');
+        
+        setTimeout(() => {
+            dispatch(setSuccessAlert(null));
+        }, 3000);
+    } catch (error) {
+        dispatch(setError({
+            message: error.response?.data.message || error.message
+        }))
     }
 }

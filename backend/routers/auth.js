@@ -28,11 +28,10 @@ router.get("/", (req, res) => {
   }
 });
 
-
 // get the admins
 router.get(
   "/admins",
-  rolePermissions(["super", "sub-super"]),
+  rolePermissions(["super"]),
   async (req, res) => {
     try {
       const admins = await User.find({ isAdmin: true });
@@ -176,7 +175,7 @@ router.post("/reset-password", async (req, res) => {
       expiresIn: "1h",
     });
     // const link = `${process.env.FRONTEND_URL}/reset-password/${token}`;
-    const link = `${process.env.FRONTEND_URL}/api/auth/reset-password/${token}`;
+    const link = `${process.env.FRONTEND_URL}/reset-password/${token}`;
     // Send the email with the reset link
     const template = getResetPasswordEmail(link);
 
@@ -264,5 +263,25 @@ router.post("/logout", (req, res) => {
     res.status(200).json({ message: "Logout successful" });
   });
 });
+
+
+router.delete('/:id', rolePermissions(['super']) ,async (req ,res)=>{
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: "User id is required" });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    await User.findByIdAndDelete(id);
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+})
 
 export default router;

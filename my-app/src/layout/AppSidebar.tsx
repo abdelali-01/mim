@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
+  BoxIcon,
   CalenderIcon,
   ChevronDownIcon,
   GridIcon,
@@ -32,34 +33,39 @@ const navItems: NavItem[] = [
   {
     icon: <ListIcon />,
     name: "Orders",
-    subItems: [{ name: "Trodat Register", path: "/admin/trodat-orders" }, { name: "Other", path: "/admin/orders" }],
+    subItems: [{ name: "Trodat Register", path: "/admin/trodat-orders" }],
   },
   {
     name: "Manage",
     icon: <TaskIcon />,
     subItems: [{ name: "Cash register", path: "/admin/cash-register" },
-      {name : "Tampons Stock" , path: '/admin/tampon-stock'},
+    { name: "Tampons Stock", path: '/admin/tampon-stock' },
     { name: "Notebooks ( credit )", path: "/admin/notebooks" }
-  ],
+    ],
   },
-  {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/admin/calendar",
-  },
+  // {
+  //   icon: <CalenderIcon />,
+  //   name: "Calendar",
+  //   path: "/admin/calendar",
+  // },
 ];
 
-const navManagerItems : NavItem[] = [
+const navManagerItems: NavItem[] = [
   {
     icon: <ListIcon />,
-    name: "Orders",
-    subItems: [{ name: "Trodat Register", path: "/admin/trodat-orders" }, { name: "Other", path: "/admin/orders" }],
+    name: "Tampon orders",
+    path : "/admin/trodat-orders"
   },
   {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/admin/calendar",
-  },
+    icon :<BoxIcon/> ,
+    name : "Tampon stock",
+    path : "/admin/tampon-stock"
+  }
+  // {
+  //   icon: <CalenderIcon />,
+  //   name: "Calendar",
+  //   path: "/admin/calendar",
+  // },
 ]
 
 const othersItems: NavItem[] = [
@@ -68,39 +74,16 @@ const othersItems: NavItem[] = [
     name: "Accounts",
     path: "/admin/accounts",
   },
-  // {
-  //   name: "Forms",
-  //   icon: <ListIcon />,
-  //   subItems: [{ name: "Form Elements", path: "/form-elements" }],
-  // },
-  // {
-  //   name: "Pages",
-  //   icon: <PageIcon />,
-  //   subItems: [
-  //     { name: "Blank Page", path: "/blank", pro: false },
-  //     { name: "404 Error", path: "/error-404", pro: false },
-  //   ],
-  // },
-  // {
-  //   icon: <PieChartIcon />,
-  //   name: "Charts",
-  //   subItems: [
-  //     { name: "Line Chart", path: "/line-chart", pro: false },
-  //     { name: "Bar Chart", path: "/bar-chart", pro: false },
-  //   ],
-  // },
-  // {
-  //   icon: <BoxCubeIcon />,
-  //   name: "UI Elements",
-  //   subItems: [
-  //     { name: "Alerts", path: "/alerts", pro: false },
-  //     { name: "Avatar", path: "/avatars", pro: false },
-  //     { name: "Badge", path: "/badge", pro: false },
-  //     { name: "Buttons", path: "/buttons", pro: false },
-  //     { name: "Images", path: "/images", pro: false },
-  //     { name: "Videos", path: "/videos", pro: false },
-  //   ],
-  // },
+  {
+    icon: <PlugInIcon />,
+    name: "Authentication",
+    subItems: [
+      { name: "Register Client", path: "/admin/register" },
+    ],
+  },
+];
+
+const othersAdminItems: NavItem[] = [
   {
     icon: <PlugInIcon />,
     name: "Authentication",
@@ -126,8 +109,8 @@ const AppSidebar: React.FC = () => {
             <button
               onClick={() => handleSubmenuToggle(index, menuType)}
               className={`menu-item group  ${openSubmenu?.type === menuType && openSubmenu?.index === index
-                  ? "menu-item-active"
-                  : "menu-item-inactive"
+                ? "menu-item-active"
+                : "menu-item-inactive"
                 } cursor-pointer ${!isExpanded && !isHovered
                   ? "lg:justify-center"
                   : "lg:justify-start"
@@ -135,8 +118,8 @@ const AppSidebar: React.FC = () => {
             >
               <span
                 className={` ${openSubmenu?.type === menuType && openSubmenu?.index === index
-                    ? "menu-item-icon-active"
-                    : "menu-item-icon-inactive"
+                  ? "menu-item-icon-active"
+                  : "menu-item-icon-inactive"
                   }`}
               >
                 {nav.icon}
@@ -147,9 +130,9 @@ const AppSidebar: React.FC = () => {
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDownIcon
                   className={`ml-auto w-5 h-5 transition-transform duration-200  ${openSubmenu?.type === menuType &&
-                      openSubmenu?.index === index
-                      ? "rotate-180 text-brand-500"
-                      : ""
+                    openSubmenu?.index === index
+                    ? "rotate-180 text-brand-500"
+                    : ""
                     }`}
                 />
               )}
@@ -163,8 +146,8 @@ const AppSidebar: React.FC = () => {
               >
                 <span
                   className={`${isActive(nav.path)
-                      ? "menu-item-icon-active"
-                      : "menu-item-icon-inactive"
+                    ? "menu-item-icon-active"
+                    : "menu-item-icon-inactive"
                     }`}
                 >
                   {nav.icon}
@@ -194,8 +177,8 @@ const AppSidebar: React.FC = () => {
                     <Link
                       href={subItem.path}
                       className={`menu-dropdown-item ${isActive(subItem.path)
-                          ? "menu-dropdown-item-active"
-                          : "menu-dropdown-item-inactive"
+                        ? "menu-dropdown-item-active"
+                        : "menu-dropdown-item-inactive"
                         }`}
                     >
                       {subItem.name}
@@ -203,8 +186,8 @@ const AppSidebar: React.FC = () => {
                         {subItem.new && (
                           <span
                             className={`ml-auto ${isActive(subItem.path)
-                                ? "menu-dropdown-badge-active"
-                                : "menu-dropdown-badge-inactive"
+                              ? "menu-dropdown-badge-active"
+                              : "menu-dropdown-badge-inactive"
                               } menu-dropdown-badge `}
                           >
                             new
@@ -213,8 +196,8 @@ const AppSidebar: React.FC = () => {
                         {subItem.pro && (
                           <span
                             className={`ml-auto ${isActive(subItem.path)
-                                ? "menu-dropdown-badge-active"
-                                : "menu-dropdown-badge-inactive"
+                              ? "menu-dropdown-badge-active"
+                              : "menu-dropdown-badge-inactive"
                               } menu-dropdown-badge `}
                           >
                             pro
@@ -314,7 +297,7 @@ const AppSidebar: React.FC = () => {
         className={`py-8 flex  ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
           }`}
       >
-        <Link href="/">
+        <Link href="/admin">
           {isExpanded || isHovered || isMobileOpen ?
             //   <>
             //     <Image
@@ -340,9 +323,9 @@ const AppSidebar: React.FC = () => {
             //     height={32}
             //   />
             // )}
-            <h3 className="text-3xl font-bold text-black dark:text-white">Logo</h3>
+            <h3 className="text-3xl font-bold text-black dark:text-white">Mimstore <br /> Dashboard</h3>
             :
-            <h3 className="text-xl font-semibold">Logo</h3>}
+            <h3 className="text-xl font-semibold">Mimstore <br /> Dashboard</h3>}
         </Link>
       </div>
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
@@ -351,8 +334,8 @@ const AppSidebar: React.FC = () => {
             <div>
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
+                  ? "lg:justify-center"
+                  : "justify-start"
                   }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
@@ -367,8 +350,8 @@ const AppSidebar: React.FC = () => {
             {user && user.role !== 'manager' && <div className="">
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
+                  ? "lg:justify-center"
+                  : "justify-start"
                   }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
@@ -377,7 +360,7 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots />
                 )}
               </h2>
-              {renderMenuItems(othersItems, "others")}
+              {user.role === 'super' ? renderMenuItems(othersItems, "others") : renderMenuItems(othersAdminItems, "others")}
             </div>}
 
           </div>

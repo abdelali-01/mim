@@ -20,17 +20,14 @@ export default function AuthLayout({
             <div className="relative items-center justify-center  flex z-1">
               {/* <!-- ===== Common Grid Shape Start ===== --> */}
               <GridShape />
-              <div className="flex flex-col items-center max-w-xs">
+              <div className="flex flex-col items-center max-w-md">
                 <Link href="/" className="block mb-4">
-                  <Image
-                    width={231}
-                    height={48}
-                    src="./images/logo/auth-logo.svg"
-                    alt="Logo"
-                  />
+                  <h1 className="mb-2 font-semibold text-gray-400 text-title-sm dark:text-white/90 sm:text-title-md">
+                    Mimstore Dashboard
+                  </h1>
                 </Link>
                 <p className="text-center text-gray-400 dark:text-white/60">
-                  Free and Open-Source Tailwind CSS Admin Dashboard Template
+                  Store management system developed by ARIBI Ali
                 </p>
               </div>
             </div>

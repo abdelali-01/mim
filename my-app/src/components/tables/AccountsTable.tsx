@@ -2,7 +2,7 @@
 import { AppDispatch, RootState } from '@/store/store';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../ui/table'
 import { useEffect, useState } from 'react';
-import { fetchAccounts } from '@/store/accounts/accountHandler';
+import { deleteAccounts, fetchAccounts } from '@/store/accounts/accountHandler';
 import { useDispatch, useSelector } from 'react-redux';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useModal } from '@/hooks/useModal';
@@ -10,12 +10,14 @@ import { Modal } from '../ui/modal';
 import AccountModal from '../example/ModalExample/AccountModal';
 import { useSearch } from '@/context/SearchContext';
 import { filterItems } from '@/utils';
+import { useDeleteModal } from '@/context/DeleteModalContext';
 
 export default function AccountsTable() {
     const dispatch = useDispatch<AppDispatch>();
     const { accounts } = useSelector((state: RootState) => state.accounts);
 
     const { isOpen, openModal, closeModal, selectedItem } = useModal();
+    const {openModal : openDeleteModal} = useDeleteModal();
 
 
     useEffect(() => {
@@ -94,7 +96,7 @@ export default function AccountsTable() {
 
                                     <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">
                                         <PencilSquareIcon className='size-7 cursor-pointer text-brand-500' onClick={() => openModal(account)} />
-                                        <TrashIcon className="size-7 cursor-pointer text-brand-500" />
+                                        <TrashIcon className="size-7 cursor-pointer text-brand-500" onClick={()=> openDeleteModal(account._id , (id)=> dispatch(deleteAccounts(id)))}/>
                                     </TableCell>
                                 </TableRow>
                             ))}
