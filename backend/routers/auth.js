@@ -28,19 +28,6 @@ router.get("/", (req, res) => {
   }
 });
 
-// get the user
-router.get('/:id' , async (req, res) => {
-  const {id} = req.params ;
-  try {
-    const findUser = await User.findById(id);
-    if(!findUser) return res.status(404).json({message : 'User not found !'});
-
-    res.status(200).send(findUser);
-  } catch (error) {
-    console.log('error during getting user ' , error)
-    res.status(400).json({message : error.message});
-  }
-})
 
 // get the admins
 router.get(
@@ -67,6 +54,20 @@ router.get(
     }
   }
 );
+
+// get the user
+router.get('/:id' , async (req, res) => {
+  const {id} = req.params ;
+  try {
+    const findUser = await User.findById(id);
+    if(!findUser) return res.status(404).json({message : 'User not found !'});
+
+    res.status(200).send(findUser);
+  } catch (error) {
+    console.log('error during getting user ' , error)
+    res.status(400).json({message : error.message});
+  }
+})
 
 // Signup route
 router.post(

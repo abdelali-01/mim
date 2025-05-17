@@ -7,10 +7,17 @@ import StoreProvider from './StoreProvider';
 import AuthInitializer from './AuthInitializer';
 import ErrorChecking from './ErrorChecking';
 import AlertPlayer from './AlertPlayer';
+import { Metadata } from 'next';
 
 const outfit = Outfit({
   subsets: ["latin"],
 });
+
+export const metadata: Metadata = {
+    title:
+        "Mimstore",
+    description: "store managment system",
+};
 
 export default function RootLayout({
   children,

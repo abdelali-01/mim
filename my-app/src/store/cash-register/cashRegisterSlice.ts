@@ -34,12 +34,14 @@ interface StateType {
     registers: Register[] | null;
     cashRegisterPages: CashRegisterPage[] | null;
     selectedPage: CashRegisterPage | null;
+    statistic : {total : number ; isUp : boolean ; monthlySeries : number[]} | null ;
 }
 
 const initialState: StateType = {
     registers: null,
     cashRegisterPages: null,
-    selectedPage: null
+    selectedPage: null,
+    statistic : null ,
 }
 
 const cashRegisterSlice = createSlice({
@@ -54,9 +56,12 @@ const cashRegisterSlice = createSlice({
         },
         setSelectedPage: (state, action) => {
             state.selectedPage = action.payload;
+        },
+        setCashRegisterStatistic : (state , action)=>{
+            state.statistic = action.payload ;
         }
     }
 });
 
-export const { setCashRegisterPages, setSelectedPage, setRegisters } = cashRegisterSlice.actions;
+export const { setCashRegisterPages, setSelectedPage, setRegisters , setCashRegisterStatistic} = cashRegisterSlice.actions;
 export default cashRegisterSlice.reducer;

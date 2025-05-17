@@ -14,6 +14,7 @@ import { updateNotebook } from "@/store/notebooks/notebookHandler";
 import Image from "next/image";
 import { useImageModal } from "@/hooks/useImage";
 import ImageModal from "../ImageModal";
+import { setError } from "@/store/error/errorSlice";
 
 interface Props {
   notebookData?: NotebookItem;
@@ -97,8 +98,15 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
   }, [item]);
 
 
-  const handleSave = () => {
+  const handleSave = (e) => {
+     e.preventDefault() 
     if (!item) return;
+    if(!item.products || item.products.length < 1) {
+      dispatch(setError({
+        message : 'You can`t add page without products ?'
+      }));
+      return ;
+    }
 
     const formData = new FormData();
 
@@ -112,6 +120,7 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
     // Append the item JSON as a string
     formData.append("item", JSON.stringify(item));
 
+
     dispatch(updateNotebook(formData, notebookId, () => closeModal()));
   };
 
@@ -122,7 +131,7 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
 
   if (!item) return null;
   return (
-    <form className="" onSubmit={(e) => { e.preventDefault() }}>
+    <form className="" onSubmit={handleSave}>
       <div className="max-h-[75vh] overflow-y-auto">
         <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90 flex items-center gap-2 ">
           <span>{notebookData ? `Credit Information of ${item.date && formatDateToISO(item.date)}` : 'Add The credit information'}</span>
@@ -183,6 +192,7 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
                   <Label>Product</Label>
                   <Input type="text" value={product} placeholder="The product name"
                     onChange={(e) => handleProductChange(i, 'product', e.target.value)}
+                    required
                   />
                 </div>
 
@@ -217,6 +227,7 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
                   <Label>Price</Label>
                   <Input type="number" placeholder="Rest" value={price}
                     onChange={(e) => handleProductChange(i, 'price', +e.target.value)}
+                    required
                   />
                 </div>
                 <div className="col-span-1">
@@ -247,13 +258,12 @@ export default function NotebookModal({ notebookData, closeModal }: Props) {
         <Button size="sm" variant="outline" onClick={closeModal}>
           Close
         </Button>
-        <Button size="sm" onClick={handleSave}>
+        <Button size="sm">
           Save Changes
         </Button>
       </div>
 
       {selectedImage && imageModalOpen && <ImageModal onClose={closeImageModal} isOpen={imageModalOpen} imageUrl={selectedImage} />}
     </form>
-
   );
 }

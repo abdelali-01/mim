@@ -89,7 +89,7 @@ export default function AccountsTable() {
                                     </TableCell>
 
                                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                        {account.role} admin
+                                        {account.role === 'super' ? 'Super Admin' : account.role === 'sub-super' ? 'Admin' : 'Order Manager'}
                                     </TableCell>
 
                                     <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400 flex items-center gap-2">

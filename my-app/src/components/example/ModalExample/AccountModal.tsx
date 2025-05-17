@@ -88,9 +88,8 @@ export default function AccountModal({ account, closeModal }: Props) {
                     <Label>Role</Label>
                     <Select options={[
                         { value: 'super', label: 'Super admin' },
-                        { value: 'sub-super', label: 'Sub Super admin' },
-                        { value: 'manager', label: 'Manager' },
-                        { value: 'reader', label: 'Reader' },
+                        { value: 'sub-super', label: 'admin' },
+                        { value: 'manager', label: 'Order Manager' },
                     ]}
                         defaultValue={userInfo.role}
                         onChange={(value) => {

@@ -8,6 +8,7 @@ const server = process.env.NEXT_PUBLIC_SERVER;
 export const fetchAccounts = ()=> async (dispatch:AppDispatch) => {
     try {
         const res = await axios.get(`${server}/api/auth/admins` , {withCredentials : true});
+        
         if(res.statusText === 'OK'){
             dispatch(setAccounts(res.data.admins));
         }

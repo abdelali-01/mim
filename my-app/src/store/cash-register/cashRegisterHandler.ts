@@ -1,9 +1,10 @@
 import axios from "axios";
 import { setError } from "../error/errorSlice";
 import { AppDispatch } from "../store";
-import { CashRegisterPage, CashRegisterPageItem, RemovedItem, setCashRegisterPages, setRegisters, setSelectedPage } from "./cashRegisterSlice";
+import { CashRegisterPage, CashRegisterPageItem, RemovedItem, setCashRegisterPages, setCashRegisterStatistic, setRegisters, setSelectedPage } from "./cashRegisterSlice";
 import { setSuccessAlert } from "../alert/alertSlice";
 import { ParamValue } from "next/dist/server/request/params";
+import { setTrodatStatistic } from "../trodat-register/trodatRegisterSlice";
 
 const server = process.env.NEXT_PUBLIC_SERVER;
 
@@ -103,7 +104,7 @@ export const deleteCashRegisterPage = (pageId: ParamValue | string) => async (di
     try {
         const res = await axios.delete(`${server}/api/cash-register/${pageId}`, { withCredentials: true });
         console.log(res);
-        
+
         if (res) {
             dispatch(setSuccessAlert('You page has been deleted successfully'));
             dispatch(fetchCashRegisterPages());
@@ -114,6 +115,23 @@ export const deleteCashRegisterPage = (pageId: ParamValue | string) => async (di
         }
     } catch (error) {
         console.error('Error deleting page:', error);
+        dispatch(
+            setError({
+                message: error.response?.data?.message || error.message,
+            })
+        );
+    }
+}
+
+
+export const fecthStatistic = () => async (dispatch: AppDispatch) => {
+    try {
+        const res = await axios.get(`${server}/api/statistic` , {withCredentials : true});
+
+        dispatch(setTrodatStatistic(res.data.trodat));
+        dispatch(setCashRegisterStatistic(res.data.cashRegister));
+    } catch (error) {
+        console.error('Error with fetching statistic:', error);
         dispatch(
             setError({
                 message: error.response?.data?.message || error.message,

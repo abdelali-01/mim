@@ -131,13 +131,13 @@ export default function TrodatRegisterPageTable({ selectedPage }: { selectedPage
                                         isHeader
                                         className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                                     >
-                                        Pre payment / Rest
+                                        Total Price
                                     </TableCell>
                                     <TableCell
                                         isHeader
                                         className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                                     >
-                                        Total Price
+                                        Pre payment / Rest
                                     </TableCell>
                                     <TableCell
                                         isHeader
@@ -169,12 +169,11 @@ export default function TrodatRegisterPageTable({ selectedPage }: { selectedPage
                                                 {item.model} x {item.quantity}
                                             </TableCell>
                                             <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                                {item.prePayment === (item.quantity || 1) * (item.price || 0) ? <span>/</span> : <>{item.prePayment} DA / {(item.total || 0) - item.prePayment} DA</>}
-                                            </TableCell>
-                                            <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                                                 {item.total} DA
                                             </TableCell>
-
+                                            <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                                {item.prePayment === (item.quantity || 1) * (item.price || 0) ? <span>/</span> : <>{item.prePayment} DA / {(item.total || 0) - item.prePayment} DA</>}
+                                            </TableCell>
                                             <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                                                 {item.isDelivered ? <Badge
                                                     size="sm"
@@ -230,9 +229,6 @@ export default function TrodatRegisterPageTable({ selectedPage }: { selectedPage
                     >
                         <TrodatOrderModal dataOrder={selectedItem} closeModal={closeModal} />
                     </Modal>}
-
-
-
                 </div>
             </div>
         </div>

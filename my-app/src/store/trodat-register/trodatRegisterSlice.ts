@@ -9,9 +9,9 @@ export interface TrodatOrder {
   total?: number;
   prePayment: number;
   isCompleted: boolean;
-  isDelivered : boolean ;
-  phone? : string ;
-  email? : string 
+  isDelivered: boolean;
+  phone?: string;
+  email?: string
 }
 
 export interface TrodatRegisterPage {
@@ -29,23 +29,25 @@ export interface TrodatRegister {
 }
 
 export interface StockTable {
-  _id : string ;
-  table : {_id? : string ; model : string ; price : number ; quantity : number}[];
-  quantity : number ;
+  _id: string;
+  table: { _id?: string; model: string; price: number; quantity: number }[];
+  quantity: number;
 }
 
 interface StateType {
   registers: TrodatRegister[] | null;
   trodatRegisterPages: TrodatRegisterPage[] | null;
   selectedPage: TrodatRegisterPage | null;
-  stockTable : StockTable | null ;
+  stockTable: StockTable | null;
+  statistic: { trodatSells: { current: number, isUp: boolean }; total: { current: number, isUp: boolean } } | null
 }
 
 const initialState: StateType = {
   registers: null,
   trodatRegisterPages: null,
   selectedPage: null,
-  stockTable : null
+  stockTable: null,
+  statistic : null
 };
 
 const trodatRegisterSlice = createSlice({
@@ -61,8 +63,11 @@ const trodatRegisterSlice = createSlice({
     setSelectedTrodatPage: (state, action) => {
       state.selectedPage = action.payload;
     },
-    setStockTable : (state , action)=> {
+    setStockTable: (state, action) => {
       state.stockTable = action.payload
+    },
+    setTrodatStatistic : (state, action)=>{
+      state.statistic = action.payload 
     }
   },
 });
@@ -71,7 +76,8 @@ export const {
   setTrodatRegisterPages,
   setTrodatRegisters,
   setSelectedTrodatPage,
-  setStockTable
+  setStockTable,
+  setTrodatStatistic
 } = trodatRegisterSlice.actions;
 
 export default trodatRegisterSlice.reducer;

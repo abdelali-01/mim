@@ -44,15 +44,15 @@ export default function NotebookTable({ notebook }: Props) {
 
 
   // search logic
-  const [filredTable , setFiltredTable] = useState(notebook.table);
-  const {search} = useSearch();
+  const [filredTable, setFiltredTable] = useState(notebook.table);
+  const { search } = useSearch();
 
-  useEffect(()=>{
-    if(notebook.table){
-      const result = filterItems(notebook.table , search);
+  useEffect(() => {
+    if (notebook.table) {
+      const result = filterItems(notebook.table, search);
       setFiltredTable(result);
     }
-  },[search , notebook])
+  }, [search, notebook])
 
 
   return (
@@ -79,6 +79,12 @@ export default function NotebookTable({ notebook }: Props) {
                     isHeader
                     className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                   >
+                    Total Price
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
                     Pre-payment
                   </TableCell>
                   <TableCell
@@ -86,12 +92,6 @@ export default function NotebookTable({ notebook }: Props) {
                     className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                   >
                     Rest
-                  </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                  >
-                    Total Price
                   </TableCell>
                   <TableCell
                     isHeader
@@ -118,14 +118,14 @@ export default function NotebookTable({ notebook }: Props) {
                     {notebook.client.phone}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {notebook.total} DA
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {notebook.prePayment} DA
                   </TableCell>
 
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {notebook.total - notebook.prePayment} DA
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {notebook.total} DA
                   </TableCell>
 
                   <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
@@ -172,6 +172,12 @@ export default function NotebookTable({ notebook }: Props) {
                     isHeader
                     className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                   >
+                    Total Price
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
                     Pre-payment
                   </TableCell>
                   <TableCell
@@ -180,12 +186,7 @@ export default function NotebookTable({ notebook }: Props) {
                   >
                     Rest
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                  >
-                    Total Price
-                  </TableCell>
+
                   <TableCell
                     isHeader
                     className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
@@ -219,16 +220,15 @@ export default function NotebookTable({ notebook }: Props) {
                           >Still</Badge>}
                         </TableCell>
                         <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                          {item.total} DA
+                        </TableCell>
+                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                           {item.prePayment} DA
                         </TableCell>
 
                         <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                           {item.total - item.prePayment} DA
                         </TableCell>
-                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                          {item.total} DA
-                        </TableCell>
-
                         <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
 
                           <Badge
@@ -336,6 +336,7 @@ export default function NotebookTable({ notebook }: Props) {
             isOpen={isOpen}
             onClose={closeModal}
             className="max-w-[584px] p-5 lg:p-10"
+            index='z-99999'
           >
             <NotebookModal notebookData={selectedItem} closeModal={closeModal} />
           </Modal>}
