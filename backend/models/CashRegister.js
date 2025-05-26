@@ -38,6 +38,7 @@ const cashRegisterSchema = new mongoose.Schema({
         type: Number,
         required: [true, "Are you kidding me , Put the price man !!"],
       },
+      orderId: { type: String }, // Reference to Trodat order
     },
   ],
 });

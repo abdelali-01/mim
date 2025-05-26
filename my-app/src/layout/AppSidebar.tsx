@@ -43,11 +43,11 @@ const navItems: NavItem[] = [
     { name: "Notebooks ( credit )", path: "/admin/notebooks" }
     ],
   },
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: "Calendar",
-  //   path: "/admin/calendar",
-  // },
+  {
+    icon: <CalenderIcon />,
+    name: "Calendar",
+    path: "/admin/calendar",
+  },
 ];
 
 const navManagerItems: NavItem[] = [
@@ -60,12 +60,12 @@ const navManagerItems: NavItem[] = [
     icon :<BoxIcon/> ,
     name : "Tampon stock",
     path : "/admin/tampon-stock"
-  }
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: "Calendar",
-  //   path: "/admin/calendar",
-  // },
+  },
+  {
+    icon: <CalenderIcon />,
+    name: "Calendar",
+    path: "/admin/calendar",
+  },
 ]
 
 const othersItems: NavItem[] = [

@@ -5,29 +5,36 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import {
-  EventInput,
   DateSelectArg,
   EventClickArg,
   EventContentArg,
+  EventInput,
 } from "@fullcalendar/core";
 import { useModal } from "@/hooks/useModal";
 import { Modal } from "@/components/ui/modal";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store/store";
+import { handleCreateCalendarItem, handleUpdateCalendarItem, handleFetchCalendarItems } from "@/store/calendar/calendarHandler";
 
 interface CalendarEvent extends EventInput {
-  extendedProps: {
-    calendar: string;
+  id: string;
+  title: string;
+  start: string;
+  end?: string;
+  level: 'danger' | 'success' | 'primary' | 'warning';
+  extendedProps?: {
+    level: 'danger' | 'success' | 'primary' | 'warning';
   };
 }
 
 const Calendar: React.FC = () => {
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
-    null
-  );
+  const dispatch = useDispatch<AppDispatch>();
+  const { items: events, loading, error } = useSelector((state: RootState) => state.calendar);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [eventTitle, setEventTitle] = useState("");
   const [eventStartDate, setEventStartDate] = useState("");
   const [eventEndDate, setEventEndDate] = useState("");
-  const [eventLevel, setEventLevel] = useState("");
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [eventLevel, setEventLevel] = useState<CalendarEvent['level']>("primary");
   const calendarRef = useRef<FullCalendar>(null);
   const { isOpen, openModal, closeModal } = useModal();
 
@@ -36,32 +43,11 @@ const Calendar: React.FC = () => {
     Success: "success",
     Primary: "primary",
     Warning: "warning",
-  };
+  } as const;
 
   useEffect(() => {
-    // Initialize with some events
-    setEvents([
-      {
-        id: "1",
-        title: "Njibou sel3a",
-        start: new Date().toISOString().split("T")[0],
-        extendedProps: { calendar: "Danger" },
-      },
-      {
-        id: "2",
-        title: "ndef3o imprimant",
-        start: new Date(Date.now() + 86400000).toISOString().split("T")[0],
-        extendedProps: { calendar: "Success" },
-      },
-      {
-        id: "3",
-        title: "nkemlo",
-        start: new Date(Date.now() + 172800000).toISOString().split("T")[0],
-        end: new Date(Date.now() + 259200000).toISOString().split("T")[0],
-        extendedProps: { calendar: "Primary" },
-      },
-    ]);
-  }, []);
+    dispatch(handleFetchCalendarItems());
+  }, [dispatch]);
 
   const handleDateSelect = (selectInfo: DateSelectArg) => {
     resetModalFields();
@@ -72,56 +58,76 @@ const Calendar: React.FC = () => {
 
   const handleEventClick = (clickInfo: EventClickArg) => {
     const event = clickInfo.event;
-    setSelectedEvent(event as unknown as CalendarEvent);
+    const calendarEvent: CalendarEvent = {
+      id: event.id,
+      title: event.title,
+      start: event.start?.toISOString().split("T")[0] || "",
+      end: event.end?.toISOString().split("T")[0] || "",
+      level: event.extendedProps?.level || 'primary',
+      extendedProps: { level: event.extendedProps?.level || 'primary' }
+    };
+    setSelectedEvent(calendarEvent);
     setEventTitle(event.title);
     setEventStartDate(event.start?.toISOString().split("T")[0] || "");
     setEventEndDate(event.end?.toISOString().split("T")[0] || "");
-    setEventLevel(event.extendedProps.calendar);
+    setEventLevel(event.extendedProps?.level || 'primary');
     openModal();
   };
 
-  const handleAddOrUpdateEvent = () => {
-    if (selectedEvent) {
-      // Update existing event
-      setEvents((prevEvents) =>
-        prevEvents.map((event) =>
-          event.id === selectedEvent.id
-            ? {
-                ...event,
-                title: eventTitle,
-                start: eventStartDate,
-                end: eventEndDate,
-                extendedProps: { calendar: eventLevel },
-              }
-            : event
-        )
-      );
-    } else {
-      // Add new event
-      const newEvent: CalendarEvent = {
-        id: Date.now().toString(),
-        title: eventTitle,
-        start: eventStartDate,
-        end: eventEndDate,
-        allDay: true,
-        extendedProps: { calendar: eventLevel },
-      };
-      setEvents((prevEvents) => [...prevEvents, newEvent]);
+  const handleAddOrUpdateEvent = async () => {
+    try {
+      if (selectedEvent) {
+        await dispatch(handleUpdateCalendarItem(selectedEvent.id, {
+          title: eventTitle,
+          startDate: eventStartDate,
+          endDate: eventEndDate,
+          level: eventLevel
+        }));
+      } else {
+        await dispatch(handleCreateCalendarItem({
+          title: eventTitle,
+          startDate: eventStartDate,
+          endDate: eventEndDate,
+          level: eventLevel
+        }));
+      }
+      closeModal();
+      resetModalFields();
+    } catch (error) {
+      console.error('Failed to save event:', error);
     }
-    closeModal();
-    resetModalFields();
   };
 
   const resetModalFields = () => {
     setEventTitle("");
     setEventStartDate("");
     setEventEndDate("");
-    setEventLevel("");
+    setEventLevel("primary");
     setSelectedEvent(null);
   };
 
+  // Transform Redux events to FullCalendar format
+  const calendarEvents = events.map(event => ({
+    id: event._id,
+    title: event.title,
+    start: event.startDate,
+    end: event.endDate,
+    level: event.level,
+    extendedProps: { level: event.level }
+  }));
+
   return (
-    <div className="rounded-2xl border  border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+    <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      {loading && (
+        <div className="flex items-center justify-center p-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
+        </div>
+      )}
+      {error && (
+        <div className="p-4 text-red-500 text-center">
+          {error}
+        </div>
+      )}
       <div className="custom-calendar">
         <FullCalendar
           ref={calendarRef}
@@ -132,7 +138,7 @@ const Calendar: React.FC = () => {
             center: "title",
             right: "dayGridMonth,timeGridWeek,timeGridDay",
           }}
-          events={events}
+          events={calendarEvents}
           selectable={true}
           select={handleDateSelect}
           eventClick={handleEventClick}
@@ -194,15 +200,15 @@ const Calendar: React.FC = () => {
                             className="sr-only form-check-input"
                             type="radio"
                             name="event-level"
-                            value={key}
+                            value={value}
                             id={`modal${key}`}
-                            checked={eventLevel === key}
-                            onChange={() => setEventLevel(key)}
+                            checked={eventLevel === value}
+                            onChange={() => setEventLevel(value as CalendarEvent['level'])}
                           />
                           <span className="flex items-center justify-center w-5 h-5 mr-2 border border-gray-300 rounded-full box dark:border-gray-700">
                             <span
                               className={`h-2 w-2 rounded-full bg-white ${
-                                eventLevel === key ? "block" : "hidden"
+                                eventLevel === value ? "block" : "hidden"
                               }`}  
                             ></span>
                           </span>
@@ -268,7 +274,8 @@ const Calendar: React.FC = () => {
 };
 
 const renderEventContent = (eventInfo: EventContentArg) => {
-  const colorClass = `fc-bg-${eventInfo.event.extendedProps.calendar.toLowerCase()}`;
+  const level = eventInfo.event.extendedProps?.level || 'primary';
+  const colorClass = `fc-bg-${level}`;
   return (
     <div
       className={`event-fc-color flex fc-event-main ${colorClass} p-1 rounded-sm`}

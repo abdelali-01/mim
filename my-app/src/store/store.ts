@@ -6,6 +6,7 @@ import notebookReducer from './notebooks/notebookSlice';
 import accountReducer from './accounts/accountsSlice';
 import cashRegisterReducer from './cash-register/cashRegisterSlice';
 import trodatRegisterReducer from './trodat-register/trodatRegisterSlice';
+import calendarReducer from './calendar/calendarSlice';
 
 export const store = configureStore({
     reducer : {
@@ -16,6 +17,7 @@ export const store = configureStore({
         accounts : accountReducer,
         cashRegister : cashRegisterReducer ,
         trodatRegister : trodatRegisterReducer ,
+        calendar : calendarReducer ,
     }
 });
 

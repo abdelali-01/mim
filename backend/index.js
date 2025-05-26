@@ -8,10 +8,36 @@ import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import session from "express-session";
+import User from "./models/User.js";
+import bcrypt from "bcrypt";
 
 const app = express();
 
 dotenv.config();
+
+// Function to create initial admin user
+async function createInitialAdmin() {
+  try {
+    const adminExists = await User.findOne({ email: process.env.ADMIN_EMAIL });
+    
+    if (!adminExists) {
+      const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
+      const adminUser = new User({
+        email: process.env.ADMIN_EMAIL,
+        password: hashedPassword,
+        username: process.env.ADMIN_USERNAME,
+        role: process.env.ADMIN_ROLE || 'admin',
+        isAdmin: true
+      });
+      
+      await adminUser.save();
+      console.log('Initial admin user created successfully');
+    }
+  } catch (error) {
+    console.error('Error creating initial admin user:', error);
+  }
+}
+
 app.use(cors({
   origin : process.env.FRONTEND_URL ,
   credentials : true
@@ -30,10 +56,11 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-
-
-mongoose.connect(process.env.DATABASE_URL).then(() => {
+mongoose.connect(process.env.DATABASE_URL).then(async () => {
   console.log("Connected to database");
+  // Create initial admin user after database connection
+  await createInitialAdmin();
+  
   app.listen(process.env.PORT, () => {
     console.log(`Server running at port: ${process.env.PORT}`);
   });
@@ -69,6 +96,7 @@ import cashRegisterRoutes from './routers/cashRegister.js';
 import trodatRegisterRoues from './routers/trodatRegister.js';
 import tamponsTableRoutes from './routers/tamponTable.js';
 import statisticRoutes from './routers/statistic.js';
+import calendarRoutes from './routers/calendar.js';
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
@@ -77,3 +105,4 @@ app.use('/api/cash-register' , cashRegisterRoutes);
 app.use('/api/trodat-register' , trodatRegisterRoues);
 app.use('/api/tampon' , tamponsTableRoutes);
 app.use('/api/statistic' , statisticRoutes);
+app.use('/api/calendar', calendarRoutes);

@@ -2,36 +2,95 @@
 import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 import React, { useEffect } from "react";
 import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
-import StatisticsChart from "@/components/ecommerce/StatisticsChart";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
 import { fecthStatistic } from "@/store/cash-register/cashRegisterHandler";
-
+import { handleFetchCalendarItems } from "@/store/calendar/calendarHandler";
 
 export default function Dashboard() {
   const { user } = useSelector((state: RootState) => state.auth);
-  const dispatch = useDispatch<AppDispatch>()
+  const { items: calendarItems, loading: calendarLoading } = useSelector((state: RootState) => state.calendar);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(fecthStatistic());
+    dispatch(handleFetchCalendarItems());
   }, [dispatch]);
+
+  // Filter calendar items for today
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const todayEvents = calendarItems.filter(item => {
+    const startDate = new Date(item.startDate);
+    const endDate = new Date(item.endDate);
+    return (startDate <= tomorrow && endDate >= today);
+  });
 
   if (!user || user.role === 'manager') return null;
   return (
-    <div className="grid grid-cols-2 gap-4 md:gap-7">
-      <div className="col-span-12 space-y-7 xl:col-span-7">
-        <EcommerceMetrics />
+    <div className="space-y-7">
+      {calendarLoading ? (
+        <div className="flex items-center justify-center p-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
+        </div>
+      ) : todayEvents.length > 0 && (
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+          <h2 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white/90">Today&apos;s Events</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {todayEvents.map((event) => (
+              <div
+                key={event._id}
+                className={`rounded-lg p-4 ${
+                  event.level === 'danger'
+                    ? 'bg-error-50 dark:bg-error-500/10'
+                    : event.level === 'success'
+                    ? 'bg-success-50 dark:bg-success-500/10'
+                    : event.level === 'warning'
+                    ? 'bg-orange-50 dark:bg-orange-500/10'
+                    : 'bg-brand-50 dark:bg-brand-500/10'
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`h-2 w-2 rounded-full mt-2 ${
+                      event.level === 'danger'
+                        ? 'bg-error-500'
+                        : event.level === 'success'
+                        ? 'bg-success-500'
+                        : event.level === 'warning'
+                        ? 'bg-orange-500'
+                        : 'bg-brand-500'
+                    }`}
+                  />
+                  <div>
+                    <h3 className="font-medium text-gray-800 dark:text-white/90">{event.title}</h3>
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                      {new Date(event.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - 
+                      {new Date(event.endDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-        <MonthlySalesChart />
-      </div>
+      <div className="grid grid-cols-1 gap-4 md:gap-7 xl:grid-cols-12">
+        <div className="xl:col-span-7">
+          <EcommerceMetrics />
+          <div className="mt-7">
+            <MonthlySalesChart />
+          </div>
+        </div>
 
-      <div className="col-span-12 xl:col-span-5 max-h-full">
-        <MonthlyTarget />
-      </div>
-
-      <div className="col-span-12">
-        {/* <StatisticsChart /> */}
+        <div className="xl:col-span-5">
+          <MonthlyTarget />
+        </div>
       </div>
     </div>
   );

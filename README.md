@@ -118,7 +118,19 @@ PORT=5000
 DATABASE_URL=your_mongodb_connection_string
 FRONTEND_URL=http://localhost:3000
 JWT_SECRET=your_jwt_secret
+
+# Admin Configuration
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=your_secure_password
+ADMIN_USERNAME=admin
+ADMIN_ROLE=admin
 ```
+
+### Initial Setup
+1. Set up the environment variables as shown above.
+2. The system will automatically create an admin user with the provided credentials on first run if it doesn't exist.
+3. Make sure to use a strong password for the admin account.
+4. You can change the admin credentials by updating the environment variables and restarting the server.
 
 ### API Endpoints
 

@@ -433,7 +433,7 @@ function CashItems({ items }: { items: CashRegisterPageItem[] }) {
                                     { value: 'T', label: 'Trodat' },
                                     { value: 'F', label: 'Fourniture' },
                                 ]}
-                                    defaultValue={formData.category}
+                                    defaultValue={formData.category || 'F'}
                                     onChange={(value) => { setFormData((prev) => ({ ...prev, category: value })) }}
                                     required
                                 />
