@@ -38,18 +38,11 @@ async function createInitialAdmin() {
   }
 }
 
-// Trust proxy in production
-if (process.env.NODE_ENV === "production") {
-  app.set('trust proxy', 1);
-}
-
-// Configure CORS
 app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-  exposedHeaders: ['set-cookie']
 }));
 
 // Basic middleware
@@ -62,6 +55,18 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
   crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
 }));
+
+// Database connection
+mongoose.connect(process.env.DATABASE_URL).then(async () => {
+  console.log("Connected to database");
+  await createInitialAdmin();
+  
+  app.listen(process.env.PORT, () => {
+    console.log(`Server running at port: ${process.env.PORT}`);
+  });
+}).catch((err) => {
+  console.error("Database connection error:", err);
+});
 
 // Session configuration
 app.use(
@@ -90,17 +95,7 @@ app.use(passport.session());
 // Serve static files
 app.use("/uploads", express.static("uploads"));
 
-// Database connection
-mongoose.connect(process.env.DATABASE_URL).then(async () => {
-  console.log("Connected to database");
-  await createInitialAdmin();
-  
-  app.listen(process.env.PORT, () => {
-    console.log(`Server running at port: ${process.env.PORT}`);
-  });
-}).catch((err) => {
-  console.error("Database connection error:", err);
-});
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
