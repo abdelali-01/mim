@@ -30,52 +30,52 @@ export default function ShopPage() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   // Filter products
-  useEffect(() => {
-    let result = [...products];
+  // useEffect(() => {
+  //   let result = [...products];
 
-    // Search
-    if (searchQuery) {
-      result = result.filter(product => 
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
+  //   // Search
+  //   if (searchQuery) {
+  //     result = result.filter(product => 
+  //       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //       product.description.toLowerCase().includes(searchQuery.toLowerCase())
+  //     );
+  //   }
 
-    // Category filter
-    if (filters.category.length) {
-      result = result.filter(product => 
-        filters.category.includes(product.category)
-      );
-    }
+  //   // Category filter
+  //   if (filters.category.length) {
+  //     result = result.filter(product => 
+  //       filters.category.includes(product.category)
+  //     );
+  //   }
 
-    // Price filter
-    result = result.filter(product => 
-      product.price >= filters.price.min && 
-      product.price <= filters.price.max
-    );
+  //   // Price filter
+  //   result = result.filter(product => 
+  //     product.price >= filters.price.min && 
+  //     product.price <= filters.price.max
+  //   );
 
-    // Stock filter
-    if (filters.inStock) {
-      result = result.filter(product => product.inStock);
-    }
+  //   // Stock filter
+  //   if (filters.inStock) {
+  //     result = result.filter(product => product.inStock);
+  //   }
 
-    // Sort
-    switch (filters.sort) {
-      case 'price-low':
-        result.sort((a, b) => a.price - b.price);
-        break;
-      case 'price-high':
-        result.sort((a, b) => b.price - a.price);
-        break;
-      case 'popular':
-        result.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-        break;
-      default:
-        result.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-    }
+  //   // Sort
+  //   switch (filters.sort) {
+  //     case 'price-low':
+  //       result.sort((a, b) => a.price - b.price);
+  //       break;
+  //     case 'price-high':
+  //       result.sort((a, b) => b.price - a.price);
+  //       break;
+  //     case 'popular':
+  //       result.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+  //       break;
+  //     default:
+  //       result.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+  //   }
 
-    setFilteredProducts(result);
-  }, [filters, searchQuery, products]);
+  //   setFilteredProducts(result);
+  // }, [filters, searchQuery, products]);
 
   // Set initial products
   useEffect(() => {
