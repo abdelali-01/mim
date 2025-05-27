@@ -1,6 +1,7 @@
 'use client';
 import Button from "@/components/ui/button/Button";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -29,9 +30,11 @@ export default function Hero() {
               <div className="mt-8 sm:mt-12">
                 <div className="sm:flex sm:justify-center lg:justify-start">
                   <div className="rounded-md shadow">
+                    <Link href="/shop">
                     <Button variant="primary" size="md">
                       Shop Now
                     </Button>
+                    </Link>
                   </div>
                   <div className="mt-3 sm:mt-0 sm:ml-3">
                     <Button variant="outline" size="md">
