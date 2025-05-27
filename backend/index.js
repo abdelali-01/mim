@@ -38,31 +38,61 @@ async function createInitialAdmin() {
   }
 }
 
+// Trust proxy in production
+if (process.env.NODE_ENV === "production") {
+  app.set('trust proxy', 1);
+}
+
+// Configure CORS
 app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['set-cookie']
 }));
 
+// Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(helmet());
 app.use(cookieParser());
 
-// Basic rate limiter: max 100 requests per 5 minutes
-// const limiter = rateLimit({
-//   windowMs: 5 * 60 * 1000, // 5 minutes
-//   max: 100, // Limit each IP to 100 requests per windowMs
-//   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-//   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-//   message: "Too many requests from this IP, please try again later.",
-// });
-// app.use(limiter);
+// Configure Helmet with specific settings for production
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
+}));
 
+// Session configuration
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "MyHardAndLongSecretInThisWorld",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    },
+    proxy: process.env.NODE_ENV === "production",
+    store: MongoStore.create({ 
+      client: mongoose.connection.getClient(),
+      ttl: 10 * 24 * 60 * 60 // 10 days
+    }),
+  })
+);
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Serve static files
+app.use("/uploads", express.static("uploads"));
+
+// Database connection
 mongoose.connect(process.env.DATABASE_URL).then(async () => {
   console.log("Connected to database");
-  // Create initial admin user after database connection
   await createInitialAdmin();
   
   app.listen(process.env.PORT, () => {
@@ -72,27 +102,14 @@ mongoose.connect(process.env.DATABASE_URL).then(async () => {
   console.error("Database connection error:", err);
 });
 
-app.use(
-  session({
-    secret: "MyHardAndLongSecretInThisWorld",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 10 * 24 * 60 * 60 * 1000,
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
-    },
-    proxy: process.env.NODE_ENV === "production", // Always trust the reverse proxy
-    store: MongoStore.create({ client: mongoose.connection.getClient() }),
-  })
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
-app.use("/uploads", express.static("uploads"));
-
-
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'production' ? {} : err
+  });
+});
 
 // setup our routes
 import authRoutes from "./routers/auth.js";
@@ -107,8 +124,8 @@ import calendarRoutes from './routers/calendar.js';
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/notebooks", notebookRoutes);
-app.use('/api/cash-register' , cashRegisterRoutes);
-app.use('/api/trodat-register' , trodatRegisterRoues);
-app.use('/api/tampon' , tamponsTableRoutes);
-app.use('/api/statistic' , statisticRoutes);
+app.use('/api/cash-register', cashRegisterRoutes);
+app.use('/api/trodat-register', trodatRegisterRoues);
+app.use('/api/tampon', tamponsTableRoutes);
+app.use('/api/statistic', statisticRoutes);
 app.use('/api/calendar', calendarRoutes);

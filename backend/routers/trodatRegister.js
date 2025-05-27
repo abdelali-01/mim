@@ -93,7 +93,7 @@ async function removeTrodatPaymentFromCashRegister(orderId, prePayment) {
 }
 
 // GET: Fetch all trodat register pages and group monthly
-router.get("/", async (req, res) => {
+router.get("/", rolePermissions(["super", "sub-super" , "manager"]), async (req, res) => {
   try {
     const allPages = await TrodatRegister.find();
     if (!allPages) {
