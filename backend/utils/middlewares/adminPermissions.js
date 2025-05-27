@@ -1,18 +1,19 @@
 export const rolePermissions = (roles) => {
   return (req, res, next) => {
-    const user = req?.user;
-    if (!user) {
-      return res.status(401).json({ message: "Unauthorized" });
+    // Check if user is authenticated
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({
+        success: false,
+        message: "Please login to access this resource",
+      });
     }
 
-     if (!user || !user.role) {
-      return res.status(401).json({ message: "Unauthorized or role missing" });
-    }
-
-    const hasPermission = roles.includes(user.role);
-    
-    if (!hasPermission) {
-      return res.status(403).json({ message: "You role doesn`t support this feature !" });
+    // Check if user's role is allowed
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied. Insufficient privileges",
+      });
     }
 
     next();
@@ -20,18 +21,22 @@ export const rolePermissions = (roles) => {
 };
 
 export const addAdminPermissions = (req, res, next) => {
-  const user = req?.user;
-  if (!user) {
-    return res.status(401).json({ message: "Unauthorized" });
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({
+      success: false,
+      message: "Please login to access this resource",
+    });
   }
 
-  if (req.body?.isAdmin && req.body?.isAdmin === true && user.role !== "super") {
-    return res
-      .status(403)
-      .json({
-        message:
-          "Forbidden , you can't add an admin ! as the super admin for that",
-      });
+  if (
+    req.body?.isAdmin &&
+    req.body?.isAdmin === true &&
+    req.user?.role !== "super"
+  ) {
+    return res.status(403).json({
+      message:
+        "Forbidden , you can't add an admin ! as the super admin for that",
+    });
   }
 
   next();

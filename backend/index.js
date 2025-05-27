@@ -46,6 +46,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(cookieParser());
 
@@ -82,7 +83,7 @@ app.use(
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
     },
-    proxy: true, // Always trust the reverse proxy
+    proxy: process.env.NODE_ENV === "production", // Always trust the reverse proxy
     store: MongoStore.create({ client: mongoose.connection.getClient() }),
   })
 );
