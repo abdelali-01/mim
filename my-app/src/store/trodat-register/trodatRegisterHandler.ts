@@ -18,8 +18,9 @@ const server = process.env.NEXT_PUBLIC_SERVER;
 export const addTrodatRegisterPage = () => async (dispatch: AppDispatch) => {
   try {
     const res = await axios.post(`${server}/api/trodat-register`, {}, { withCredentials: true });
+    console.log('res from adding trodat register page', res);
 
-    if (res.statusText === "Created") {
+    if (res) {
       dispatch(setSuccessAlert("Your Page has been added successfully"));
       dispatch(fetchTrodatRegisterPages());
       setTimeout(() => dispatch(setSuccessAlert(null)), 3000);
@@ -34,8 +35,8 @@ export const addTrodatRegisterPage = () => async (dispatch: AppDispatch) => {
 export const fetchTrodatRegisterPages = () => async (dispatch: AppDispatch) => {
   try {
     const res = await axios.get(`${server}/api/trodat-register`, { withCredentials: true });
-
-    if (res.statusText === "OK") {
+    console.log('res from fetching trodat register pages', res);
+    if (res.data) {
       const pages = res.data.pages;
       if (pages.length < 1) {
         dispatch(setTrodatRegisterPages(pages));
@@ -119,7 +120,6 @@ export const deleteTrodatRegisterPage = (pageId: ParamValue | string) => async (
     dispatch(setError({ message: error.response?.data?.message || error.message }));
   }
 };
-
 
 
 // trodat stock

@@ -23,6 +23,7 @@ export default function TrodatRegistersTable() {
     const { openModal } = useDeleteModal();
 
     useEffect(() => {
+        console.log('fetching trodat register pages');
         dispatch(fetchTrodatRegisterPages());
     }, [dispatch]);
 

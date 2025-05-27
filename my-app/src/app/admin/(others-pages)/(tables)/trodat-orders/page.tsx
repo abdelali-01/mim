@@ -11,13 +11,17 @@ export default function TrodatRegister() {
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(()=>{
+        console.log('fetching trodat stock table');
         dispatch(fecthTrodatStockTable())
     },[dispatch]);
 
     return (
         <div>
             <PageBreadcrumb pageTitle='Trodat Register' />
-            <ComponentCard title='Trodat Register' cta={{ content: 'Add Page', onClick: () => {dispatch(addTrodatRegisterPage())} }}>
+            <ComponentCard title='Trodat Register' cta={{ content: 'Add Page', onClick: () => {
+                console.log('adding trodat register page')
+                dispatch(addTrodatRegisterPage())
+                }}}>
                 <TrodatRegistersTable/>
             </ComponentCard>
         </div>
