@@ -11,9 +11,8 @@ const server = process.env.NEXT_PUBLIC_SERVER;
 export const addCashRegisterPage = () => async (dispatch: AppDispatch) => {
     try {
         const res = await axios.post(`${server}/api/cash-register`, {}, { withCredentials: true });
-        console.log(res);
 
-        if (res.statusText === 'Created') {
+        if (res) {
             dispatch(setSuccessAlert('Your Page has benn added successfully'))
 
             dispatch(fetchCashRegisterPages());
@@ -33,7 +32,7 @@ export const fetchCashRegisterPages = () => async (dispatch: AppDispatch) => {
     try {
         const res = await axios.get(`${server}/api/cash-register`, { withCredentials: true });
 
-        if (res.statusText === 'OK') {
+        if (res) {
             const pages = res.data.pages;
             if (pages.length < 1) {
                 dispatch(setCashRegisterPages(pages));

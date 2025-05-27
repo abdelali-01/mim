@@ -10,7 +10,7 @@ export const fetchAccounts = ()=> async (dispatch:AppDispatch) => {
     try {
         const res = await axios.get(`${server}/api/auth/admins` , {withCredentials : true});
         
-        if(res.statusText === 'OK'){
+        if(res){
             dispatch(setAccounts(res.data.admins));
         }
     } catch (error) {
