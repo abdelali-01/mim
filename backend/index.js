@@ -80,11 +80,8 @@ app.use(
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
-    proxy: process.env.NODE_ENV === "production",
-    store: MongoStore.create({ 
-      client: mongoose.connection.getClient(),
-      ttl: 10 * 24 * 60 * 60 // 10 days
-    }),
+    proxy: process.env.NODE_ENV === "production", // Always trust the reverse proxy
+    store: MongoStore.create({ client: mongoose.connection.getClient() }),
   })
 );
 
