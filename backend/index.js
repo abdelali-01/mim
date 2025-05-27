@@ -39,10 +39,11 @@ async function createInitialAdmin() {
 }
 
 app.use(cors({
-  origin : process.env.FRONTEND_URL ,
-  credentials : true,
+  origin: process.env.FRONTEND_URL,
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['Set-Cookie']
 }));
 
 app.use(express.json());
@@ -80,9 +81,9 @@ app.use(
       maxAge: 10 * 24 * 60 * 60 * 1000,
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
     },
-    proxy: process.env.NODE_ENV === "production",
+    proxy: true, // Always trust the reverse proxy
     store: MongoStore.create({ client: mongoose.connection.getClient() }),
   })
 );

@@ -5,7 +5,12 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.share
 import { setError } from '../error/errorSlice';
 import { User } from '@/components/auth/SignUpForm';
 import { setSuccessAlert } from '../alert/alertSlice';
+
 const server = process.env.NEXT_PUBLIC_SERVER;
+
+// Global axios configuration
+axios.defaults.withCredentials = true;
+axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 export const registerUser = (user: User, clearFrom: () => void) => async (dispatch: AppDispatch) => {
     dispatch(setIsFeching(true));
