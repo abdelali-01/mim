@@ -249,7 +249,7 @@ function CashItems({ items }: { items: CashRegisterPageItem[] }) {
     const [formData, setFormData] = useState<CashRegisterPageItem>({
         _id: '',
         title: '',
-        category: '',
+        category: 'F',
         price: undefined,
     });
 
@@ -264,7 +264,7 @@ function CashItems({ items }: { items: CashRegisterPageItem[] }) {
         } else {
             setFormData({
                 title: '',
-                category: '',
+                category: 'F',
                 price: undefined,
             });
         }
@@ -433,7 +433,7 @@ function CashItems({ items }: { items: CashRegisterPageItem[] }) {
                                     { value: 'T', label: 'Trodat' },
                                     { value: 'F', label: 'Fourniture' },
                                 ]}
-                                    defaultValue={formData.category || 'F'}
+                                    defaultValue={formData.category}
                                     onChange={(value) => { setFormData((prev) => ({ ...prev, category: value })) }}
                                     required
                                 />
