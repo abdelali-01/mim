@@ -29,9 +29,9 @@ async function getOrCreateTodayCashRegister() {
 }
 
 // Helper function to add trodat payment to cash register
-async function addTrodatPaymentToCashRegister(orderId, prePayment) {
-  // Only add to cash register if there's a prePayment
-  if (prePayment > 0) {
+async function addTrodatPaymentToCashRegister(orderId, prePayment, isAuto) {
+  // Only add to cash register if there's a prePayment and isAuto is true
+  if (prePayment > 0 && isAuto) {
     const cashRegister = await getOrCreateTodayCashRegister();
     
     cashRegister.items.push({
@@ -46,38 +46,42 @@ async function addTrodatPaymentToCashRegister(orderId, prePayment) {
 }
 
 // Helper function to update trodat payment in cash register
-async function updateTrodatPaymentInCashRegister(orderId, newPrePayment) {
-  const cashRegister = await getOrCreateTodayCashRegister();
-  
-  const existingItem = cashRegister.items.find(item => 
-    item.orderId === orderId && item.title === "Trodat"
-  );
+async function updateTrodatPaymentInCashRegister(orderId, newPrePayment, addedPayment , isAuto) {
+  // Only update cash register if isAuto is true
+  if (isAuto) {
+    const cashRegister = await getOrCreateTodayCashRegister();
+    
+    const existingItem = cashRegister.items.find(item => 
+      item.orderId == orderId && item.title === "Trodat"
+    );
+    
 
-  if (existingItem) {
-    if (newPrePayment > 0) {
-      // Update existing entry with new prePayment
-      existingItem.price = newPrePayment;
-    } else {
-      // Remove the entry if new prePayment is 0
-      cashRegister.items = cashRegister.items.filter(item => item.orderId !== orderId);
+    if (existingItem) {
+      if (newPrePayment > 0) {
+        // Update existing entry with new prePayment
+        existingItem.price = newPrePayment;
+      } else {
+        // Remove the entry if new prePayment is 0
+        cashRegister.items = cashRegister.items.filter(item => item.orderId !== orderId);
+      }
+      await cashRegister.save();
+    } else if (newPrePayment > 0) {
+      // Add new entry only if prePayment is greater than 0
+      cashRegister.items.push({
+        title: "Trodat",
+        category: "T",
+        price: addedPayment,
+        orderId: orderId
+      });
+      await cashRegister.save();
     }
-    await cashRegister.save();
-  } else if (newPrePayment > 0) {
-    // Add new entry only if prePayment is greater than 0
-    cashRegister.items.push({
-      title: "Trodat",
-      category: "T",
-      price: newPrePayment,
-      orderId: orderId
-    });
-    await cashRegister.save();
   }
 }
 
 // Helper function to remove trodat payment from cash register
-async function removeTrodatPaymentFromCashRegister(orderId, prePayment) {
-  // Only add negative entry if there was a prePayment
-  if (prePayment > 0) {
+async function removeTrodatPaymentFromCashRegister(orderId, prePayment, isAuto) {
+  // Only add negative entry if there was a prePayment and isAuto is true
+  if (prePayment > 0 && isAuto) {
     const cashRegister = await getOrCreateTodayCashRegister();
     
     // Add a negative entry for the removed payment
@@ -93,7 +97,7 @@ async function removeTrodatPaymentFromCashRegister(orderId, prePayment) {
 }
 
 // GET: Fetch all trodat register pages and group monthly
-router.get("/", rolePermissions(["super", "sub-super" , "manager"]), async (req, res) => {
+router.get("/",  async (req, res) => {
   try {
     const allPages = await TrodatRegister.find();
     if (!allPages) {
@@ -125,7 +129,17 @@ router.get("/", rolePermissions(["super", "sub-super" , "manager"]), async (req,
 // POST: Create a new register
 router.post("/", rolePermissions(["super", "sub-super"]), async (req, res) => {
   try {
-    const newPage = new TrodatRegister(); // auto totals from hook
+    const { date } = req.body;
+    const newPage = new TrodatRegister();
+    
+    if (date) {
+      // Create date at noon to avoid timezone issues
+      const inputDate = new Date(date);
+      inputDate.setHours(12, 0, 0, 0);
+      newPage.date = inputDate;
+      newPage.isAuto = false; // Set isAuto to false when date is manually provided
+    }
+    
     const saved = await newPage.save();
     res.status(201).json(saved);
   } catch (err) {
@@ -134,7 +148,7 @@ router.post("/", rolePermissions(["super", "sub-super"]), async (req, res) => {
 });
 
 // PUT: Add / Update / Remove order entries
-router.put("/:id", rolePermissions(["super", "sub-super", "manager"]), async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const { addOrder, updateOrder, removeOrderId } = req.body;
 
@@ -145,11 +159,11 @@ router.put("/:id", rolePermissions(["super", "sub-super", "manager"]), async (re
 
     // Add Order
     if (addOrder) {
-      const savedOrder = page.orders.push(addOrder);
-      const orderId = savedOrder._id;
+      page.orders.push(addOrder);
+      const orderId = page.orders[page.orders.length - 1]._id;
       
-      // Add to cash register
-      await addTrodatPaymentToCashRegister(orderId, addOrder.prePayment);
+      // Add to cash register only if isAuto is true
+      await addTrodatPaymentToCashRegister(orderId, addOrder.prePayment, page.isAuto);
 
       // Subtract from stock
       const item = tamponStock.table.find(i => i.model === addOrder.model);
@@ -171,9 +185,9 @@ router.put("/:id", rolePermissions(["super", "sub-super", "manager"]), async (re
         const newModel = updateOrder.model;
         const newPrePayment = updateOrder.prePayment;
 
-        // Update cash register with new prePayment
+        // Update cash register with new prePayment only if isAuto is true
         if (prevPrePayment !== newPrePayment) {
-          await updateTrodatPaymentInCashRegister(updateOrder._id.toString(), newPrePayment);
+          await updateTrodatPaymentInCashRegister(updateOrder._id.toString(), newPrePayment, newPrePayment - prevPrePayment , page.isAuto);
         }
 
         const quantityDiff = newQuantity - prevQuantity;
@@ -205,8 +219,8 @@ router.put("/:id", rolePermissions(["super", "sub-super", "manager"]), async (re
     if (removeOrderId) {
       const orderToRemove = page.orders.find((o) => o._id.toString() === removeOrderId);
       if (orderToRemove) {
-        // Add negative entry to cash register
-        await removeTrodatPaymentFromCashRegister(removeOrderId, orderToRemove.prePayment);
+        // Add negative entry to cash register only if isAuto is true
+        await removeTrodatPaymentFromCashRegister(removeOrderId, orderToRemove.prePayment, page.isAuto);
 
         // Return quantity to stock
         const item = tamponStock.table.find(i => i.model === orderToRemove.model);

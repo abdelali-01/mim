@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const trodatRegisterSchema = new mongoose.Schema(
   {
     date : {type: Date , default : Date.now} ,
+    isAuto : {type : Boolean , default : true},
     trodatSells : {type : Number , default : 0},
     total : {type : Number , default : 0},
     orders : [

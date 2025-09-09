@@ -36,7 +36,16 @@ router.get("/", rolePermissions(["super", "sub-super"]), async (req, res) => {
 
 router.post("/", rolePermissions(["super", "sub-super"]), async (req, res) => {
   try {
-    const newPage = new CashRegister(); // no totals here; hook will handle
+    const { date } = req.body;
+    const newPage = new CashRegister();
+    
+    if (date) {
+      // Create date at noon to avoid timezone issues
+      const inputDate = new Date(date);
+      inputDate.setHours(12, 0, 0, 0);
+      newPage.date = inputDate;
+    }
+    
     const saved = await newPage.save();
     res.status(201).json(saved);
   } catch (err) {

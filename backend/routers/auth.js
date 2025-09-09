@@ -31,7 +31,7 @@ router.get("/", (req, res) => {
 // get the admins
 router.get(
   "/admins",
-  rolePermissions(["super"]),
+  rolePermissions(["super", "sub-super"]),
   async (req, res) => {
     try {
       const admins = await User.find({ isAdmin: true });
@@ -54,6 +54,7 @@ router.get(
   }
 );
 
+
 // get the user
 router.get('/:id' , async (req, res) => {
   const {id} = req.params ;
@@ -67,6 +68,7 @@ router.get('/:id' , async (req, res) => {
     res.status(400).json({message : error.message});
   }
 })
+
 
 // Signup route
 router.post(
@@ -263,6 +265,7 @@ router.post("/logout", (req, res) => {
     res.status(200).json({ message: "Logout successful" });
   });
 });
+
 
 
 router.delete('/:id', rolePermissions(['super']) ,async (req ,res)=>{

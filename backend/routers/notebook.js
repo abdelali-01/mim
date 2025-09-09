@@ -40,53 +40,6 @@ router.get("/:id", rolePermissions(['super' , 'sub-super']) ,async (req, res) =>
 });
 
 // Update a notebook by ID or add an item to the table
-// router.put("/:id", rolePermissions(["super", "sub-super"]) , upload.single('image'), async (req, res) => {
-//   try {
-//     const { item } = req.body;
-
-//     if (!item || typeof item !== "object") {
-//       return res.status(400).json({ message: "A valid item is required." });
-//     }
-
-//     const notebook = await Notebook.findById(req.params.id);
-//     if (!notebook) {
-//       return res.status(404).json({ message: "Notebook not found." });
-//     }
-
-
-//     if (req.file) {
-//         const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-
-//         // Add the image URL to the item (or update it)
-//         if (item.products && Array.isArray(item.products)) {
-//           item.products = item.products.map((product) => ({
-//             ...product,
-//             image: imageUrl,
-//           }));
-//         }
-//     }
-
-//     // If the item has an _id, it's an update
-//     if (item._id) {
-//       const index = notebook.table.findIndex((entry) => entry._id.toString() === item._id);
-//       if (index !== -1) {
-//         notebook.table[index] = item; // update the existing item
-//       } else {
-//         return res.status(404).json({ message: "Item not found in notebook." });
-//       }
-//     } else {
-//       notebook.table.push(item); // add new item
-//     }
-
-//     await notebook.save();
-
-//     res.status(200).json(notebook);
-//   } catch (error) {
-//     console.error("Error updating notebook item:", error);
-//     res.status(500).json({ message: "Server error while updating notebook item." });
-//   }
-// });
-
 router.put("/:id", rolePermissions(["super", "sub-super"]), upload.any(), async (req, res) => {
   try {
     const itemData = JSON.parse(req.body.item); // parse JSON string sent in FormData
