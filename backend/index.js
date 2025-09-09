@@ -9,15 +9,17 @@ import session from "express-session";
 import User from "./models/User.js";
 import bcrypt from "bcrypt";
 
-const app = express();
-
 import path from "path";
 import { fileURLToPath } from "url";
+const app = express();
+
+
 
 // This fixes __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Load .env from backend folder
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 
@@ -73,7 +75,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 10 * 24 * 60 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000,
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
     },
@@ -84,14 +86,18 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Set the correct uploads directory path based on environment
-const uploadsPath = path.join(
-  __dirname,
-  "..",
-  "resources",
-  "backend",
-  "uploads"
-);
-app.use("/uploads", express.static(uploadsPath));
+// const uploadsPath = path.join(
+//   __dirname,
+//   "..",
+//   "resources",
+//   "backend",
+//   "uploads"
+// );
+
+
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
 
 // setup our routes
 import authRoutes from "./routers/auth.js";
